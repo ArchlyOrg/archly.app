@@ -1,6 +1,6 @@
-**/__tests__/**/*.js?(x)
-**/__mocks__/**/*.js?(x)
-src/pages/__tests__/**/*.js?(x)
-src/pages/__mocks__/**/*.js?(x)
-src/setupTests.ts
+**/__tests__/*
+**/__mocks__/*
+**/**/__tests__/*
+**/**/__mocks__/*
+**/setupTests.ts
 node_modules

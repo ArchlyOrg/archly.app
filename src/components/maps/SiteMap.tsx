@@ -1,4 +1,3 @@
-import { heroMapConfig, siteMapConfig } from '@archly/utils/constants'
 import {
   Children,
   cloneElement,
@@ -7,6 +6,9 @@ import {
   useRef,
   useState
 } from 'react'
+
+import { heroMapConfig, siteMapConfig } from '@archly/utils/constants'
+
 import type { HeroMapProperties } from './HeroMap'
 
 function SiteMap({ centerCoords, children }: HeroMapProperties): JSX.Element {

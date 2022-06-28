@@ -1,7 +1,14 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import type { KeyboardEvent, ReactElement } from 'react'
+
 import { useNavigate } from 'react-router-dom'
 import type { IFruit } from 'types'
 import { useMediaQuery } from 'utils'
+
 import ImageAttribution from './ImageAttribution'
 
 const PREFERRED_IMAGE_WIDTH = 384

@@ -1,6 +1,9 @@
 import type { ReactElement } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+import { MapMarker, SiteMap } from '@archly/components'
+import { mapsApiKey } from '@archly/utils/constants'
+import { copyText } from '@archly/utils/helpers'
 import { Status, Wrapper } from '@googlemaps/react-wrapper'
 import { Badge, Button, Drawer, Tooltip } from 'react-daisyui'
 import {
@@ -16,9 +19,6 @@ import type { Site } from 'thin-backend'
 import { initThinBackend, query } from 'thin-backend'
 import { useQuerySingleResult } from 'thin-backend-react'
 
-import { MapMarker, SiteMap } from '@archly/components'
-import { mapsApiKey } from '@archly/utils/constants'
-import { copyText } from '@archly/utils/helpers'
 
 initThinBackend({ host: process.env.NEXT_PUBLIC_BACKEND_URL })
 

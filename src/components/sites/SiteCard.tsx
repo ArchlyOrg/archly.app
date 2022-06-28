@@ -1,12 +1,11 @@
-import type { Site } from 'thin-backend'
-import { query } from 'thin-backend'
-import { useCurrentUser, useQuerySingleResult } from 'thin-backend-react'
-
 import {
   DeleteSiteButton,
   EditSiteButton,
   ViewSiteButton
 } from '@archly/components'
+import type { Site } from 'thin-backend'
+import { query } from 'thin-backend'
+import { useCurrentUser, useQuerySingleResult } from 'thin-backend-react'
 
 interface SiteCardProperties {
   site: Site
@@ -30,9 +29,9 @@ export default function SiteCard({ site }: SiteCardProperties): JSX.Element {
       </p>
       {user && site.userId === user.id ? (
         <div className='site__actions inline-flex items-center gap-x-0'>
-          <EditSiteButton site={site.id} />
-          <DeleteSiteButton site={site.id} />
-          <ViewSiteButton site={site.id} />
+          <EditSiteButton site={site.id} properties={{ size: 'sm' }} />
+          <DeleteSiteButton site={site.id} properties={{ size: 'sm' }} />
+          <ViewSiteButton site={site.id} properties={{ size: 'sm' }} />
         </div>
       ) : undefined}
     </div>

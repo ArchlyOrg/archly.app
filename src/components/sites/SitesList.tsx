@@ -1,9 +1,9 @@
+import { NewSiteButton, SiteCard } from '@archly/components'
 import { FaSpinner } from 'react-icons/fa'
 import type { Site } from 'thin-backend'
 import { query } from 'thin-backend'
 import { useIsLoggedIn, useQuery } from 'thin-backend-react'
 
-import { NewSiteButton, SiteCard } from '@archly/components'
 
 export default function SitesList(): JSX.Element {
   const sites = useQuery(query('sites').orderByDesc('createdAt'))

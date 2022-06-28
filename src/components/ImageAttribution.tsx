@@ -1,5 +1,6 @@
 import type { MouseEvent, ReactElement } from 'react'
-import type { IFruit } from 'types'
+
+import type { IFruit } from '@archly/types'
 
 interface Properties {
   author: IFruit['image']['author']
@@ -12,7 +13,7 @@ function onClick(event: MouseEvent): void {
 export default function ImageAttribution({ author }: Properties): ReactElement {
   return (
     <>
-      <div className='absolute top-0 h-full w-full bg-gradient-to-b from-transparent via-transparent to-current text-black text-opacity-50' />
+      <div className='text-black absolute top-0 h-full w-full bg-gradient-to-b from-transparent via-transparent to-current text-opacity-50' />
       <div className='absolute bottom-1 right-1 px-1 text-xs text-white'>
         <span>Photo by </span>
         <a

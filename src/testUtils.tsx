@@ -1,5 +1,6 @@
-import { render } from '@testing-library/react'
 import type { PropsWithChildren, ReactElement } from 'react'
+
+import { render } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { BrowserRouter } from 'react-router-dom'
 

@@ -152,6 +152,6 @@ export const siteMapConfig = {
   zoom: siteMapConfigZoom
 }
 
-export const mapsApiKey: string = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-  ? process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY.toString()
-  : ''
+const mapsKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string
+export const mapsApiKey: string = mapsKey || ''
+

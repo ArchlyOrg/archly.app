@@ -1,4 +1,3 @@
-import { handleLocationError } from '@archly/utils/helpers'
 // import type { MarkerClusterer } from '@googlemaps/markerclusterer'
 import type { ReactElement } from 'react'
 import {
@@ -10,9 +9,12 @@ import {
   useRef,
   useState
 } from 'react'
+
 // import type { Site } from 'thin-backend'
 import Loader from '@archly/components/Loader'
 import { heroMapConfig, localSitesMapConfig } from '@archly/utils/constants'
+import { handleLocationError } from '@archly/utils/helpers'
+
 import type { MapMarkerProperties } from './MapMarker'
 
 interface LocalSitesMapProperties {
@@ -139,7 +141,7 @@ function LocalSitesMap({ children }: LocalSitesMapProperties): JSX.Element {
   return (
     <>
       <div ref={reference} className='w-100 h-100 absolute top-0 left-0' />
-      {Children.map(children, (child, index) => {
+      {Children.map(children, child => {
         if (isValidElement(child)) {
           // const { site } = child.props as MapMarkerProperties
           // if (index === 5) {

@@ -1,20 +1,12 @@
 import type { ReactElement } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+import { HeroMap, MapMarker, SitesList } from '@archly/components'
+import { heroMapConfig, mapsApiKey } from '@archly/utils/constants'
 import { Status, Wrapper } from '@googlemaps/react-wrapper'
 import { FaSpinner } from 'react-icons/fa'
 import type { Site } from 'thin-backend'
-import { initThinBackend, query } from 'thin-backend'
-
-import { SitesList } from '@archly/components'
-
-import { HeroMap, MapMarker } from '../components/maps'
-import { heroMapConfig } from '../utils/constants'
-
-initThinBackend({ host: process.env.NEXT_PUBLIC_BACKEND_URL })
-const mapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-  ? process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY.toString()
-  : ''
+import { query } from 'thin-backend'
 
 const render = (status: Status): ReactElement => {
   switch (status) {
@@ -30,16 +22,16 @@ const render = (status: Status): ReactElement => {
 }
 
 export default function HomePage(): JSX.Element {
-  const { center } = heroMapConfig
+  // const { center } = heroMapConfig
   const wrapper = useRef<HTMLDivElement>(null)
   const [loading, setLoading] = useState(false)
   const [primarySite, setPrimarySite] = useState<Site | undefined>()
   const [primaryCoords, setPrimaryCoords] = useState<
     google.maps.LatLngLiteral | undefined
   >(
-    primarySite
+    primarySite !== undefined
       ? (JSON.parse(primarySite.coords) as google.maps.LatLngLiteral)
-      : undefined
+      : heroMapConfig.center
   )
   console.log('primary:', primarySite)
 
@@ -47,14 +39,32 @@ export default function HomePage(): JSX.Element {
     console.log('Fetching site...')
     setLoading(true)
 
-    const site = await query('sites').where('primarySite', true).fetchOne()
-    if (site.id) {
-      setPrimarySite(site)
-      console.log('primary:', primarySite)
-      setPrimaryCoords(JSON.parse(site.coords) as google.maps.LatLngLiteral)
-      setLoading(false)
-    }
-  }, [primarySite, setLoading, setPrimarySite])
+    // try {
+    query('sites')
+      .where('primarySite', true)
+      .fetchOne()
+      .then(site => {
+        console.log('Fetched site:', site)
+
+        // if (site) {
+        //   setPrimarySite(site)
+        //   console.log('primary:', primarySite)
+        //   setPrimaryCoords(JSON.parse(site.coords) as google.maps.LatLngLiteral)
+        //   setLoading(false)
+        // }
+      })
+      .catch(error => {
+        console.error('Error getting primarysite:', error)
+        setLoading(false)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+    // } catch (error) {
+    //   // eslint-disable-next-line no-console
+    //   console.log('error:', error)
+    // }
+  }, [setLoading])
 
   useEffect(() => {
     if (!primarySite) {
@@ -63,6 +73,7 @@ export default function HomePage(): JSX.Element {
           console.log('primary:', primarySite)
         })
         .catch(error => {
+          // eslint-disable-next-line no-console
           console.error(error)
         })
     }
@@ -70,8 +81,11 @@ export default function HomePage(): JSX.Element {
 
   return (
     <div ref={wrapper}>
-      <main className='flex-column flex w-screen flex-nowrap'>
-        <section className='w-100 relative h-screen content-center items-center'>
+      <main className='flex-column w-100 flex-wrap'>
+        <section
+          id='home'
+          className='w-100 border-1 relative h-screen content-center items-center justify-center bg-darkish'
+        >
           <Wrapper apiKey={mapsApiKey} render={render}>
             {loading && primaryCoords ? (
               <div>
@@ -96,7 +110,7 @@ export default function HomePage(): JSX.Element {
             <p>The Social App for Archaeology Nerds.</p>
           </div>
         </section>
-        <section>
+        <section className='w-100 relative h-screen content-center items-center bg-gray-400 dark:bg-darkish'>
           <div className='section__content w-100'>
             <SitesList />
           </div>

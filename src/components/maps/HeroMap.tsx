@@ -35,7 +35,10 @@ function HeroMap({ centerCoords, children }: HeroMapProperties): JSX.Element {
 
   return (
     <>
-      <div ref={reference} className='w-100 h-100 absolute top-0 left-0' />
+      <div
+        ref={reference}
+        className='absolute top-0 left-0 z-0 h-screen w-full'
+      />
       {Children.map(children, child => {
         if (isValidElement(child as JSX.Element)) {
           return cloneElement(child as JSX.Element, {

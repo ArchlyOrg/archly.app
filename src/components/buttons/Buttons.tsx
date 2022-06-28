@@ -1,13 +1,8 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-console */
-import {
-  createRecord,
-  deleteRecord,
-  getCurrentUserId,
-  updateRecord
-} from 'thin-backend'
 // import { useQuery, useQuerySingleResult, useCurrentUser, useIsLoggedIn } from 'thin-backend/react';
 import { useRef, useState } from 'react'
+
 import type { ButtonProps } from 'react-daisyui'
 import { Button } from 'react-daisyui'
 import {
@@ -17,6 +12,12 @@ import {
   MdLocationPin
 } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
+import {
+  createRecord,
+  deleteRecord,
+  getCurrentUserId,
+  updateRecord
+} from 'thin-backend'
 
 /**
  * NewSiteButton
@@ -37,11 +38,11 @@ export function NewSiteButton(properties: ButtonProps): JSX.Element {
     setIsLoading(true)
 
     createRecord('sites', {
-      name: window.prompt('Site title') || '',
-      description: window.prompt('Description?') || '',
-      location: window.prompt('Location?') || '',
+      name: window.prompt('Site title') ?? '',
+      description: window.prompt('Description?') ?? '',
+      location: window.prompt('Location?') ?? '',
       coords: '{ "lat": 51.697332, "lng": -2.304548 }',
-      wikipediaUrl: window.prompt('Wikipedia URL?') || '',
+      wikipediaUrl: window.prompt('Wikipedia URL?') ?? '',
       userId: getCurrentUserId(),
       media: '{}'
     })
@@ -175,9 +176,9 @@ export function EditSiteButton({
     console.log('Editing site...', site)
 
     updateRecord('sites', site, {
-      name: window.prompt('Site title') || '',
-      description: window.prompt('Description?') || '',
-      location: window.prompt('Location?') || '',
+      name: window.prompt('Site title') ?? '',
+      description: window.prompt('Description?') ?? '',
+      location: window.prompt('Location?') ?? '',
       coords: '{ "lat": 51.697332, "lng": -2.304548 }',
       userId: getCurrentUserId(),
       media: '{}'

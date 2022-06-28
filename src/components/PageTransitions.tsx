@@ -1,6 +1,7 @@
 /* eslint-disable unicorn/no-null */
 import type { ReactNode } from 'react'
 import { useEffect, useRef } from 'react'
+
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 
 interface MainComponentProperties {

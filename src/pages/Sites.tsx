@@ -1,6 +1,8 @@
 import type { ReactElement } from 'react'
 import { useRef } from 'react'
 
+import { LocalSitesMap, MapMarker } from '@archly/components/maps'
+import { mapsApiKey } from '@archly/utils/constants'
 import { Status, Wrapper } from '@googlemaps/react-wrapper'
 import { FaSpinner } from 'react-icons/fa'
 import { initThinBackend, query } from 'thin-backend'
@@ -9,8 +11,6 @@ import {
   useQuery
 } from 'thin-backend-react'
 
-import { LocalSitesMap, MapMarker } from '@archly/components/maps'
-import { mapsApiKey } from '@archly/utils/constants'
 
 initThinBackend({ host: process.env.NEXT_PUBLIC_BACKEND_URL })
 
