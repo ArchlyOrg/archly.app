@@ -52,6 +52,7 @@ module.exports = {
     },
     fontFamily: {
       sans: ['"Exo 2"', 'sans-serif'],
+      serif: ['serif'],
     }
   },
   daisyui: {

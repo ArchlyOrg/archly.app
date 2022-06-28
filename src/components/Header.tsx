@@ -12,7 +12,7 @@ function Header(): JSX.Element {
           <span className='text-xl font-black text-green-100'>Archly</span>
           <MdAddLocationAlt className='text-xl text-green-100' name='logo' />
         </div>
-        <menu className='none w-auto items-center justify-center space-x-8 px-0 lg:flex'>
+        <menu className='none [a: text-green-100] w-auto items-center justify-center space-x-8 px-0 font-bold lg:flex'>
           <RouterLink href='/'>Home</RouterLink>
           <RouterLink href='/sites'>Sites</RouterLink>
           <RouterLink href='/about'>About</RouterLink>

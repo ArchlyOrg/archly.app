@@ -4,7 +4,7 @@ import { useRef } from 'react'
 import { initThinBackend } from 'thin-backend'
 // import { useCurrentUser } from 'thin-backend-react';
 
-initThinBackend({ host: process.env.NEXT_PUBLIC_BACKEND_URL })
+initThinBackend({ host: import.meta.env.VITE_BACKEND_URL as string })
 
 export default function About(): ReactElement {
   // const user = useCurrentUser()
@@ -23,8 +23,8 @@ export default function About(): ReactElement {
 				/>
 				<link rel='icon' href='/favicon.ico' />
 			</Head> */}
-      <main className='flex h-screen w-full flex-col items-center justify-center'>
-        <section>
+      <main className='flex-column w-100 flex-wrap'>
+        <section className='w-100 border-1 relative h-screen content-center items-center justify-center bg-darkish'>
           <div
             className='
 					section__overlay

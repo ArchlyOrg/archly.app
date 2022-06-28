@@ -9,8 +9,6 @@ import { initThinBackend } from 'thin-backend'
 import { ThinBackend } from 'thin-backend-react'
 import { registerSW } from 'virtual:pwa-register'
 import './index.css'
-import './theme/index.css'
-import './theme/typography.css'
 
 initThinBackend({ host: import.meta.env.VITE_BACKEND_URL as string })
 registerSW()

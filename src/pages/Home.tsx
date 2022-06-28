@@ -111,7 +111,7 @@ export default function HomePage(): JSX.Element {
           </div>
         </section>
         <section className='w-100 relative h-screen content-center items-center bg-gray-400 dark:bg-darkish'>
-          <div className='section__content w-100'>
+          <div className='section__content w-full'>
             <SitesList />
           </div>
         </section>

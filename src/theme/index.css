@@ -1,9 +1,18 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+@import "./fonts.css";
+@import "./typography.css";
 
 @layer base {
   body {
+    background-color: theme('colors.background');
+    color: theme('colors.white');
+  }
+  a {
+    color: theme('colors.green.100');
+  }
+  .section {
     background-color: theme('colors.background');
     color: theme('colors.white');
   }

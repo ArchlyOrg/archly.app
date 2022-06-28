@@ -1,11 +1,15 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 @layer base {
   h1 {
-    @apply text-green-200 font-black text-8xl;
+    @apply text-green-100 font-black text-8xl font-sans;
   }
+  h2 {
+    @apply text-green-100 font-black text-6xl font-sans;
+  }
+
   p {
     @apply text-white text-lg;
   }

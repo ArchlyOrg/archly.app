@@ -1,5 +1,7 @@
 {
   "name": "archly",
+  "description": "A social app for archaeology nerds",
+  "author": "@luxumbra",
   "license": "MIT",
   "private": true,
   "version": "0.0.1",
@@ -18,7 +20,7 @@
     "format": "prettier -uw --ignore-path .gitignore .",
     "run-tsc": "tsc",
     "run-eslint": "eslint --cache --fix --ignore-path .eslintignore --ext .ts,.tsx src",
-    "run-stylelint": "stylelint --cache --fix \"**/*.css\"",
+    "run-stylelint": "stylelint --cache --fix --ignore-path .gitignore \"**/*.css\"",
     "lint": "run-p run-tsc run-eslint run-stylelint",
     "validate": "run-p lint test:ci test:e2e:headless"
   },
