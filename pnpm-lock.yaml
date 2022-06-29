@@ -70,8 +70,8 @@ specifiers:
   stylelint-config-prettier: 9.0.3
   stylelint-config-standard: 26.0.0
   tailwindcss: 3.1.2
-  thin-backend: '*'
-  thin-backend-react: ^0.9.3
+  thin-backend: ^0.10.3
+  thin-backend-react: ^0.10.1
   typescript: 4.7.3
   vite: 2.9.12
   vite-plugin-pwa: 0.12.0
@@ -94,8 +94,8 @@ dependencies:
   react-query: 3.39.1_ef5jwxihqo6n7gxfmzogljlgcm
   react-router-dom: 6.3.0_ef5jwxihqo6n7gxfmzogljlgcm
   react-transition-group: 4.4.2_ef5jwxihqo6n7gxfmzogljlgcm
-  thin-backend: 0.9.1_react@18.1.0
-  thin-backend-react: 0.9.3_wlnjsxilxn7bdfdpfzmvzqoiia
+  thin-backend: 0.10.3_react@18.1.0
+  thin-backend-react: 0.10.1_phgrgdg4civblsjka3mdkisoae
 
 devDependencies:
   '@babel/core': 7.18.2
@@ -8050,18 +8050,18 @@ packages:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
     dev: true
 
-  /thin-backend-react/0.9.3_wlnjsxilxn7bdfdpfzmvzqoiia:
-    resolution: {integrity: sha512-/k17yZHm4UIy+eFoyPDqxzb8GqphXM6VwPd/TU5mA7tlQaHwhHFXuz6JW6/oCfCqVrNH5kCFqvmmjMH7PK4p7A==}
+  /thin-backend-react/0.10.1_phgrgdg4civblsjka3mdkisoae:
+    resolution: {integrity: sha512-jMF9aC2aeSqkldd0+TPPiXYK/JhBkaioIgtvKt7VPOFnOxqMh+rxx9V/DIsmXhVizl1xsIm9hMIZf3DTnilfsw==}
     peerDependencies:
       react: '>=17.0.2'
       thin-backend: '*'
     dependencies:
       react: 18.1.0
-      thin-backend: 0.9.1_react@18.1.0
+      thin-backend: 0.10.3_react@18.1.0
     dev: false
 
-  /thin-backend/0.9.1_react@18.1.0:
-    resolution: {integrity: sha512-Ddv5SY9mYJpd/FIlxTG6I8uH8KvBIgmQjL9CJ3c+s7xSI+aOmqYTe3rB0KG+FSJQizgA0LznlHBnFVatjFfEbw==}
+  /thin-backend/0.10.3_react@18.1.0:
+    resolution: {integrity: sha512-aePqTknAAyo1m2V3tfn+3yNPPlkJYxnt++ga64VI5G1TeTvXPGAnSgDno2ldsS7oX5l28is8L61IoCCkDuZKgw==}
     peerDependencies:
       react: '>=17.0.2'
     dependencies:

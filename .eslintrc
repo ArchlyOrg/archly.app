@@ -6,7 +6,7 @@
     "es2021": true
   },
   "parser": "@typescript-eslint/parser",
-  "plugins": ["react-prefer-function-component"],
+  "plugins": ["jsx-a11y", "react-prefer-function-component"],
   "extends": [
     "eslint:all",
     "plugin:@typescript-eslint/all",

@@ -1,4 +1,3 @@
-
 export interface IFruit {
   name: string
   image: {

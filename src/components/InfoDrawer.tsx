@@ -5,7 +5,7 @@ import { Button, Drawer } from 'react-daisyui'
 import type { Site } from 'thin-backend'
 
 const side = (
-  <ul className='menu bg-base-200 w-80 overflow-y-auto p-4'>
+  <ul className='menu w-80 overflow-y-auto bg-base-200 p-4'>
     <li>
       <a href='#hello'>Sidebar Item 1</a>
     </li>

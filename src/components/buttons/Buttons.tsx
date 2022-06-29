@@ -72,7 +72,7 @@ export function NewSiteButton(properties: ButtonProps): JSX.Element {
       variant='outline'
       size={size ?? 'md'}
       color='ghost'
-      className='shadow-sm shadow-black'
+      className='shadow-black shadow-sm'
       // {...properties}
     />
   )
@@ -142,7 +142,7 @@ export function DeleteSiteButton({
       variant='outline'
       size={size ?? 'md'}
       color='ghost'
-      className='shadow-sm shadow-black'
+      className='shadow-black shadow-sm'
     />
   )
 }
@@ -207,7 +207,7 @@ export function EditSiteButton({
       variant='outline'
       size={size ?? 'md'}
       color='ghost'
-      className='shadow-sm shadow-black'
+      className='shadow-black shadow-sm'
     />
   )
 }
@@ -246,7 +246,7 @@ export function ViewSiteButton({
       variant='outline'
       size={size ?? 'md'}
       color='ghost'
-      className='shadow-sm shadow-black'
+      className='shadow-black shadow-sm'
     />
   )
 }

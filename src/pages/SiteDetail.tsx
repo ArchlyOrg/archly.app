@@ -19,7 +19,6 @@ import type { Site } from 'thin-backend'
 import { initThinBackend, query } from 'thin-backend'
 import { useQuerySingleResult } from 'thin-backend-react'
 
-
 initThinBackend({ host: process.env.NEXT_PUBLIC_BACKEND_URL })
 
 const render = (status: Status): ReactElement => {
@@ -36,7 +35,7 @@ const render = (status: Status): ReactElement => {
 }
 
 const side = (
-  <ul className='menu bg-base-200 w-80 overflow-y-auto p-4'>
+  <ul className='menu w-80 overflow-y-auto bg-base-200 p-4'>
     <li>
       <a href='/'>Sidebar Item 1</a>
     </li>

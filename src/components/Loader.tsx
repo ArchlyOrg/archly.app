@@ -5,6 +5,7 @@ function Loader(): JSX.Element {
     <div
       className='
 			align-center
+			bg-black
 			absolute
 			top-0
 			left-0
@@ -12,7 +13,6 @@ function Loader(): JSX.Element {
 			flex
 			h-screen
 			w-screen
-			bg-black
 			text-center
 			text-white'
     >

@@ -1,4 +1,3 @@
-
 export function copyText(text: string): void {
   if (typeof navigator !== 'undefined') {
     navigator.clipboard

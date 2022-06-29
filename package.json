@@ -8,7 +8,7 @@
   "scripts": {
     "build": "vite build",
     "commit": "cz",
-    "dev": "vite --open",
+    "dev": "vite",
     "prepare": "husky install",
     "preview": "vite preview",
     "preview:test": "start-server-and-test preview http://localhost:4173",
@@ -36,8 +36,8 @@
     "react-query": "3.39.1",
     "react-router-dom": "6.3.0",
     "react-transition-group": "^4.4.2",
-    "thin-backend": "*",
-    "thin-backend-react": "^0.9.3"
+    "thin-backend": "^0.10.3",
+    "thin-backend-react": "^0.10.1"
   },
   "devDependencies": {
     "@babel/core": "7.18.2",

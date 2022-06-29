@@ -108,7 +108,7 @@ export function MapMarker(options: MapMarkerOptionsProperties): JSX.Element {
     }
   }, [infoWindow, marker, id, name, options, navigate])
 
-  return <>marker.current ?? new google.maps.Marker()</>
+  // return <>{`${marker.current ?? new google.maps.Marker()}`}</>
 }
 
 export default MapMarker

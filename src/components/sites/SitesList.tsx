@@ -4,9 +4,10 @@ import type { Site } from 'thin-backend'
 import { query } from 'thin-backend'
 import { useIsLoggedIn, useQuery } from 'thin-backend-react'
 
-
 export default function SitesList(): JSX.Element {
   const sites = useQuery(query('sites').orderByDesc('createdAt'))
+  console.log('Sites:', sites)
+
   // const user = useCurrentUser()
   const isLoggedIn = useIsLoggedIn()
 

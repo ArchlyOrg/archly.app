@@ -80,42 +80,38 @@ export default function HomePage(): JSX.Element {
   }, [primarySite, getPrimarySite])
 
   return (
-    <div ref={wrapper}>
-      <main className='flex-column w-100 flex-wrap'>
-        <section
-          id='home'
-          className='w-100 border-1 relative h-screen content-center items-center justify-center bg-darkish'
-        >
-          <Wrapper apiKey={mapsApiKey} render={render}>
-            {loading && primaryCoords ? (
-              <div>
-                <FaSpinner fontSize='3em' color='green.100' />
-              </div>
-            ) : (
-              <HeroMap
-                centerCoords={primaryCoords as google.maps.LatLngLiteral}
-              >
-                <MapMarker
-                  title={primarySite?.name}
-                  key='HeroMarker'
-                  position={primaryCoords}
-                  visible
-                  site={primarySite}
-                />
-              </HeroMap>
-            )}
-          </Wrapper>
-          <div className='relative mt-28 text-center'>
-            <h1>Archly</h1>
-            <p>The Social App for Archaeology Nerds.</p>
-          </div>
-        </section>
-        <section className='w-100 relative h-screen content-center items-center bg-gray-400 dark:bg-darkish'>
-          <div className='section__content w-full'>
-            <SitesList />
-          </div>
-        </section>
-      </main>
-    </div>
+    <main ref={wrapper} className='w-100 flex-col flex-wrap'>
+      <section
+        id='home'
+        className='w-100 border-1 relative flex h-screen flex-col content-center items-center justify-center bg-darkish'
+      >
+        <Wrapper apiKey={mapsApiKey} render={render}>
+          {loading && primaryCoords ? (
+            <div>
+              <FaSpinner fontSize='3em' color='green.100' />
+            </div>
+          ) : (
+            <HeroMap centerCoords={primaryCoords as google.maps.LatLngLiteral}>
+              <MapMarker
+                title={primarySite?.name}
+                key='HeroMarker'
+                position={primaryCoords}
+                visible
+                site={primarySite}
+              />
+            </HeroMap>
+          )}
+        </Wrapper>
+        <div className='section__content border-1 relative mt-28 max-w-screen-2xl text-center'>
+          <h1>Archly</h1>
+          <p>The Social App for Archaeology Nerds.</p>
+        </div>
+      </section>
+      <section className='w-100 relative flex h-screen flex-col content-center items-center  justify-center bg-darkish dark:bg-darkish'>
+        <div className='section__content w-3/4'>
+          <SitesList />
+        </div>
+      </section>
+    </main>
   )
 }
