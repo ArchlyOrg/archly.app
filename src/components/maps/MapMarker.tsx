@@ -1,19 +1,19 @@
 import { useEffect, useMemo, useRef } from 'react'
 
+import type { Site } from '@archly/types'
 import { useNavigate } from 'react-router-dom'
-import type { Site } from 'thin-backend'
 
 export const contentString = (site: Site): string => {
-  const { name, description, id } = site
-  const link = `/sites/${id}`
+  const { name, description, siteId } = site
+  const link = `/sites/${siteId}`
 
   const content = `
-  <div className="infoWindowContent" data-id="${id}">
+  <div className="infoWindowContent" data-id="${siteId}">
     <div className="siteNotice">
       <h4 className="firstHeading">${name}</h4>
       <div className="bodyContent">
         <p>${description}</p>
-        <button className="infoButton" data-buttonId="${id}" href="${link}">More info</button>
+        <button className="infoButton" data-buttonId="${siteId}" href="${link}">More info</button>
       </div>
     </div>
   </div>`
@@ -42,7 +42,7 @@ export function MapMarker(options: MapMarkerOptionsProperties): JSX.Element {
     [site]
   )
   const navigate = useNavigate()
-  const { id, name } = site ?? { id: undefined, name: undefined }
+  const { siteId, name } = site ?? { siteId: undefined, name: undefined }
   // const contentString = useMemo(() => `<div>${options.site?.name}</div>`, [options.site?.name]);
 
   useEffect(() => {
@@ -80,21 +80,21 @@ export function MapMarker(options: MapMarkerOptionsProperties): JSX.Element {
       // eslint-disable-next-line unicorn/no-null
       marker.current?.setMap(null)
     }
-  }, [marker, options, id, infoWindow, markerSize, navigate, site])
+  }, [marker, options, siteId, infoWindow, markerSize, navigate, site])
 
   useEffect(() => {
     if (marker.current && infoWindow) {
       // console.log('marker: ', marker);
 
       google.maps.event.addListener(infoWindow, 'domready', () => {
-        if (id) {
-          const button = document.querySelector(`[data-buttonId="${id}"]`)
+        if (siteId) {
+          const button = document.querySelector(`[data-buttonId="${siteId}"]`)
           if (button) {
             // console.log(button)
             button.addEventListener('click', () => {
               // eslint-disable-next-line no-console
-              console.log('button clicked:', id)
-              navigate(`/sites/${id}`)
+              console.log('button clicked:', siteId)
+              navigate(`/sites/${siteId}`)
             })
           }
         }
@@ -106,7 +106,7 @@ export function MapMarker(options: MapMarkerOptionsProperties): JSX.Element {
         google.maps.event.clearInstanceListeners(infoWindow)
       }
     }
-  }, [infoWindow, marker, id, name, options, navigate])
+  }, [infoWindow, marker, siteId, name, options, navigate])
 
   // return <>{`${marker.current ?? new google.maps.Marker()}`}</>
 }

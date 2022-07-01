@@ -4,37 +4,30 @@ import { StrictMode } from 'react'
 import App from '@archly/App'
 import { ThemeProvider } from '@archly/contexts'
 import { createRoot } from 'react-dom/client'
-// import { initThinBackend } from 'thin-backend'
-// import { ThinBackend } from 'thin-backend-react'
+import { MoralisProvider } from 'react-moralis'
+import { BrowserRouter } from 'react-router-dom'
 import { registerSW } from 'virtual:pwa-register'
+import { NotificationProvider } from 'web3uikit'
 import './index.css'
 
-// initThinBackend({ host: import.meta.env.VITE_BACKEND_URL as string })
-
 registerSW()
-
-// const MAX_RETRIES = 1
-// const queryClient = new QueryClient({
-//   defaultOptions: {
-//     queries: {
-//       staleTime: Number.POSITIVE_INFINITY,
-//       retry: MAX_RETRIES
-//     }
-//   }
-// })
 
 const rootElement = document.querySelector('#root')
 const root = rootElement && createRoot(rootElement)
 // const currentTheme = getInitialTheme()
+const moralisAppId = import.meta.env.VITE_MORALIS_APP_ID
+const moralisServerUrl = import.meta.env.VITE_MORALIS_SERVER_URL
 
 root?.render(
   <StrictMode>
     <ThemeProvider>
-      {/* <ThinBackend requireLogin> */}
-      {/* <QueryClientProvider client={queryClient}> */}
-      <App />
-      {/* </QueryClientProvider> */}
-      {/* </ThinBackend> */}
+      <MoralisProvider appId={moralisAppId} serverUrl={moralisServerUrl}>
+        <NotificationProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </NotificationProvider>
+      </MoralisProvider>
     </ThemeProvider>
   </StrictMode>
 )

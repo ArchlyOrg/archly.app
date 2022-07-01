@@ -2,11 +2,11 @@ import type { ReactElement } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { HeroMap, MapMarker, SitesList } from '@archly/components'
+import type { Site } from '@archly/types'
 import { heroMapConfig, mapsApiKey } from '@archly/utils/constants'
 import { Status, Wrapper } from '@googlemaps/react-wrapper'
 import { FaSpinner } from 'react-icons/fa'
-import type { Site } from 'thin-backend'
-import { query } from 'thin-backend'
+import { useMoralis } from 'react-moralis'
 
 const render = (status: Status): ReactElement => {
   switch (status) {
@@ -22,7 +22,7 @@ const render = (status: Status): ReactElement => {
 }
 
 export default function HomePage(): JSX.Element {
-  // const { center } = heroMapConfig
+  const { Moralis, isAuthenticated } = useMoralis()
   const wrapper = useRef<HTMLDivElement>(null)
   const [loading, setLoading] = useState(false)
   const [primarySite, setPrimarySite] = useState<Site | undefined>()
@@ -30,51 +30,45 @@ export default function HomePage(): JSX.Element {
     google.maps.LatLngLiteral | undefined
   >(
     primarySite !== undefined
-      ? (JSON.parse(primarySite.coords) as google.maps.LatLngLiteral)
+      ? ({
+          lat: primarySite.lat,
+          lng: primarySite.lng
+        } as unknown as google.maps.LatLngLiteral)
       : heroMapConfig.center
   )
-  console.log('primary:', primarySite)
 
-  const getPrimarySite = useCallback(async () => {
-    console.log('Fetching site...')
-    setLoading(true)
+  const getPrimarySite = useCallback(async (): Promise<Site | undefined> => {
+    try {
+      setLoading(true)
+      const Sites = Moralis.Object.extend('Sites') as string
+      const query = new Moralis.Query(Sites)
+      query.equalTo('primarySite', true)
 
-    // try {
-    query('sites')
-      .where('primarySite', true)
-      .fetchOne()
-      .then(site => {
-        console.log('Fetched site:', site)
-
-        // if (site) {
-        //   setPrimarySite(site)
-        //   console.log('primary:', primarySite)
-        //   setPrimaryCoords(JSON.parse(site.coords) as google.maps.LatLngLiteral)
-        //   setLoading(false)
-        // }
-      })
-      .catch(error => {
-        console.error('Error getting primarysite:', error)
-        setLoading(false)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-    // } catch (error) {
-    //   // eslint-disable-next-line no-console
-    //   console.log('error:', error)
-    // }
-  }, [setLoading])
+      const result = await query.find()
+      setPrimarySite(result[0].attributes as Site)
+      setPrimaryCoords({
+        lat: result[0].attributes.lat as number,
+        lng: result[0].attributes.lng as number
+      } as unknown as google.maps.LatLngLiteral)
+      setLoading(false)
+      return result[0].attributes as Site
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('error:', error)
+      return undefined
+    }
+  }, [Moralis.Object, Moralis.Query])
 
   useEffect(() => {
-    if (!primarySite) {
+    if (primarySite === undefined) {
       getPrimarySite()
-        .then(() => {
-          console.log('primary:', primarySite)
+        .then(result => {
+          setLoading(false)
         })
         .catch(error => {
           // eslint-disable-next-line no-console
-          console.error(error)
+          console.log('error:', error)
+          setLoading(false)
         })
     }
   }, [primarySite, getPrimarySite])
@@ -86,21 +80,15 @@ export default function HomePage(): JSX.Element {
         className='w-100 border-1 relative flex h-screen flex-col content-center items-center justify-center bg-darkish'
       >
         <Wrapper apiKey={mapsApiKey} render={render}>
-          {loading && primaryCoords ? (
-            <div>
-              <FaSpinner fontSize='3em' color='green.100' />
-            </div>
-          ) : (
-            <HeroMap centerCoords={primaryCoords as google.maps.LatLngLiteral}>
-              <MapMarker
-                title={primarySite?.name}
-                key='HeroMarker'
-                position={primaryCoords}
-                visible
-                site={primarySite}
-              />
-            </HeroMap>
-          )}
+          <HeroMap centerCoords={primaryCoords}>
+            <MapMarker
+              title={primarySite?.name}
+              key='HeroMarker'
+              position={primaryCoords}
+              visible
+              site={primarySite}
+            />
+          </HeroMap>
         </Wrapper>
         <div className='section__content border-1 relative mt-28 max-w-screen-2xl text-center'>
           <h1>Archly</h1>

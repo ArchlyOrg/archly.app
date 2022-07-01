@@ -1,7 +1,7 @@
-// import type { MarkerClusterer } from '@googlemaps/markerclusterer'
-import type { ReactElement } from 'react'
+import type { ReactNode } from 'react'
 import {
   Children,
+  cloneElement,
   isValidElement,
   useCallback,
   useEffect,
@@ -14,16 +14,18 @@ import {
 import Loader from '@archly/components/Loader'
 import { heroMapConfig, localSitesMapConfig } from '@archly/utils/constants'
 import { handleLocationError } from '@archly/utils/helpers'
+import { MarkerClusterer } from '@googlemaps/markerclusterer'
+import type { Site } from 'thin-backend'
 
 import type { MapMarkerProperties } from './MapMarker'
 
 interface LocalSitesMapProperties {
-  children?: ReactElement
+  children?: ReactNode
 }
 
-// interface MarkerClusterProperties extends MarkerClusterer {
-//   site: Site
-// }
+interface MarkerClusterProperties extends google.maps.MarkerClusterer {
+  site: Site
+}
 
 function LocalSitesMap({ children }: LocalSitesMapProperties): JSX.Element {
   const reference = useRef<HTMLDivElement>(null)
@@ -140,29 +142,32 @@ function LocalSitesMap({ children }: LocalSitesMapProperties): JSX.Element {
 
   return (
     <>
-      <div ref={reference} className='w-100 h-100 absolute top-0 left-0' />
-      {Children.map(children, child => {
+      <div ref={reference} className='absolute top-0 left-0 h-screen w-full' />
+      {Children.map(children, (child, index) => {
         if (isValidElement(child)) {
-          // const { site } = child.props as MapMarkerProperties
-          // if (index === 5) {
-          //   console.log('markers 2:', markers)
-          //   const markerCluster = new MarkerClusterer({
-          //     map,
-          //     markers
-          //   }) as MarkerClusterProperties
-          //   return cloneElement(child, {
-          //     markerCluster
-          //   })
-          // }
-          // markers.push(child.props as MapMarkerProperties)
-          // latlngBounds.current.extend(
-          //   new google.maps.LatLng(position as google.maps.LatLngLiteral)
-          // )
-          // return cloneElement(child, {
-          //   map
-          // })
+          const { site } = child.props as MapMarkerProperties
+          console.log('site', site)
+
+          // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+          if (index === 5) {
+            console.log('markers 2:', markers)
+            const markerCluster = new MarkerClusterer({
+              map,
+              markers
+            })
+            return cloneElement(child, {
+              markerCluster
+            })
+          }
+          markers.push(child.props as MapMarkerProperties)
+          latlngBounds.current.extend(
+            new google.maps.LatLng(position as google.maps.LatLngLiteral)
+          )
+          return cloneElement(child, {
+            map
+          })
         }
-        return loading ? <Loader /> : (child as ReactElement)
+        return loading ? <Loader /> : child
       })}
     </>
   )
