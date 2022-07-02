@@ -5,12 +5,16 @@ contract archly {
 
     // public address
     address public owner;
+    address public user;
     uint256 private counter;
+    uint256 private reactionCounter;
 
     constructor() {
         counter = 0;
+        reactionCounter = 0;
         owner = msg.sender;
-     }
+        user = msg.sender;
+    }
 
     // defines the rental info
     struct siteInfo {
@@ -38,18 +42,48 @@ contract archly {
         address owner
     );
 
+    struct userReaction {
+        uint256 id;
+        string userId;
+        address user;
+        string siteId;
+    }
+
     // the event emitted when a user 'likes' a site
-    event userReaction (
+    event userReacted (
         uint256 id,
-        address user
+        string userId,
+        address user,
+        string siteId
     );
 
-    // map & store rentalIds
+    // map the userReactions
+    mapping(uint256 => userReaction) userReactions;
+    uint256[] public userReactionIds;
+
+    // map & store siteIds
     mapping(uint256 => siteInfo) sites;
     uint256[] public siteIds;
 
+    // Adds a users reaction to a site
+    function addUserReaction(
+        string memory userId,
+        string memory siteId
+    ) public {
+        // require(id < reactionCounter, "No such site exists");
+        userReaction storage newUserReaction = userReactions[reactionCounter];
+        newUserReaction.userId = userId;
+        newUserReaction.user = user;
+        newUserReaction.siteId = siteId;
+        // increment the reaction counter
+        userReactionIds.push(reactionCounter);
 
-    // function to add new rental property
+        // emit the event
+        emit userReacted(reactionCounter, userId, user, siteId);
+        reactionCounter++;
+    }
+
+    // function to add new site
     function addSite(
         string memory name,
         string memory location,
@@ -88,6 +122,15 @@ contract archly {
         counter++;
     }
 
+    // check if the user has already liked the site, using the userId and siteId
+    // function checkReactions(uint256 id, string memory userId, string memory siteId) public view returns (bool) {
+    //     for(uint256 i = 0; i < userReactionIds.length; i++){
+    //         if(userReactions[userReactionIds[i]].userId == userId && userReactions[userReactionIds[i]].siteId == siteId){
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
     // private function (only accessible internally by the contract) to check the sites
     // function checkSites(uint256 id, string[] memory newSites) private view returns (bool){
 
@@ -119,6 +162,17 @@ contract archly {
     //     // emit the booking on-chain so Moralis can pick it up and we can display bookings to the UI
     //     emit newDatesBooked(newBookings, id, msg.sender, rentals[id].city,  rentals[id].imgUrl);
 
+    // }
+
+    // use userAddress to find & return userReactions
+    // function getUsersReactions(address uid) public view returns (string memory, string memory, address) {
+    //     userReaction storage r = userReactions[str];
+    //     // for(uint256 i = 0; i < userReactionIds.length; i++){
+    //     //     if(userReactions[userReactionIds[i]].userAddress == userAddress){
+    //     //         return (userReactions[userReactionIds[i]].userId, userReactions[userReactionIds[i]].siteId, userReactions[userReactionIds[i]].userAddress);
+    //     //     }
+    //     // }
+    //     return (r.userId, r.siteId, r.userAddress);
     // }
 
     // use rental id to find & return info on a rental

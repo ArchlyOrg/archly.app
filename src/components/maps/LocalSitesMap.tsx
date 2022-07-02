@@ -15,7 +15,6 @@ import Loader from '@archly/components/Loader'
 import { heroMapConfig, localSitesMapConfig } from '@archly/utils/constants'
 import { handleLocationError } from '@archly/utils/helpers'
 import { MarkerClusterer } from '@googlemaps/markerclusterer'
-import type { Site } from 'thin-backend'
 
 import type { MapMarkerProperties } from './MapMarker'
 
@@ -23,9 +22,9 @@ interface LocalSitesMapProperties {
   children?: ReactNode
 }
 
-interface MarkerClusterProperties extends google.maps.MarkerClusterer {
-  site: Site
-}
+// interface MarkerClusterProperties extends MarkerClusterer {
+//   site: Site
+// }
 
 function LocalSitesMap({ children }: LocalSitesMapProperties): JSX.Element {
   const reference = useRef<HTMLDivElement>(null)
@@ -37,9 +36,7 @@ function LocalSitesMap({ children }: LocalSitesMapProperties): JSX.Element {
   // const offsetY = 0.6
   // const markerWidth = 75
   // const markerHeight = 100
-  const [userPosition, setUserPosition] = useState<
-    GeolocationPosition | undefined
-  >()
+  const [userPos, setUserPos] = useState<GeolocationPosition | undefined>()
   const [loading, setLoading] = useState(false)
   // const markerSize = useRef<google.maps.Size>(
   //   new google.maps.Size(markerWidth, markerHeight)
@@ -61,7 +58,7 @@ function LocalSitesMap({ children }: LocalSitesMapProperties): JSX.Element {
           //   lat: position.coords.latitude,
           //   lng: position.coords.longitude
           // }
-          setUserPosition(position)
+          setUserPos(position)
         },
         () => {
           handleLocationError(true)
@@ -72,19 +69,19 @@ function LocalSitesMap({ children }: LocalSitesMapProperties): JSX.Element {
       // Browser doesn't support Geolocation
       handleLocationError(false)
     }
-    if (userPosition) {
+    if (userPos) {
       setLoading(false)
     }
-  }, [userPosition])
+  }, [userPos])
 
   useEffect(() => {
     if (reference.current && !map) {
       setMap(
         new google.maps.Map(reference.current as HTMLElement, {
-          center: userPosition
+          center: userPos
             ? {
-                lat: userPosition.coords.latitude,
-                lng: userPosition.coords.latitude
+                lat: userPos.coords.latitude,
+                lng: userPos.coords.latitude
               }
             : center,
           zoom,
@@ -93,13 +90,13 @@ function LocalSitesMap({ children }: LocalSitesMapProperties): JSX.Element {
         })
       )
     }
-    if (!userPosition) {
+    if (!userPos) {
       geoLocation()
     }
-  }, [center, disableDefaultUI, map, styles, userPosition, geoLocation, zoom])
+  }, [center, disableDefaultUI, map, styles, userPos, geoLocation, zoom])
 
   useEffect(() => {
-    if (userPosition && map) {
+    if (userPos && map) {
       // console.log('latlng', latlngBounds)
       // console.log('Your position:', userPosition)
       // console.log('latlngBounds:', latlngBounds)
@@ -119,8 +116,8 @@ function LocalSitesMap({ children }: LocalSitesMapProperties): JSX.Element {
 
       const userMarker: google.maps.Marker = new google.maps.Marker({
         position: {
-          lat: userPosition.coords.latitude,
-          lng: userPosition.coords.longitude
+          lat: userPos.coords.latitude,
+          lng: userPos.coords.longitude
         },
         title: 'Your current position',
         label: 'You are here!',
@@ -138,7 +135,7 @@ function LocalSitesMap({ children }: LocalSitesMapProperties): JSX.Element {
       //   scaledSize: markerSize.current,
       // })
     }
-  }, [map, userPosition, latlngBounds, markers])
+  }, [map, userPos, latlngBounds, markers])
 
   return (
     <>
@@ -146,7 +143,6 @@ function LocalSitesMap({ children }: LocalSitesMapProperties): JSX.Element {
       {Children.map(children, (child, index) => {
         if (isValidElement(child)) {
           const { site } = child.props as MapMarkerProperties
-          console.log('site', site)
 
           // eslint-disable-next-line @typescript-eslint/no-magic-numbers
           if (index === 5) {
@@ -159,10 +155,15 @@ function LocalSitesMap({ children }: LocalSitesMapProperties): JSX.Element {
               markerCluster
             })
           }
+          const { lat, lng } = center as google.maps.LatLngLiteral
+          const position = site
+            ? {
+                lat: site.lat as unknown as number,
+                lng: site.lng as unknown as number
+              }
+            : { lat, lng }
           markers.push(child.props as MapMarkerProperties)
-          latlngBounds.current.extend(
-            new google.maps.LatLng(position as google.maps.LatLngLiteral)
-          )
+          latlngBounds.current.extend(new google.maps.LatLng(position))
           return cloneElement(child, {
             map
           })

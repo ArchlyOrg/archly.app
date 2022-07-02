@@ -15,20 +15,18 @@ const render = (status: Status): ReactElement => {
     case Status.FAILURE:
       return <p>Error: Couldn&apos;t load map</p>
     case Status.SUCCESS:
-      return <HeroMap />
+      return <p>Great success!</p>
     default:
       return <p>Unknown</p>
   }
 }
 
 export default function HomePage(): JSX.Element {
-  const { Moralis, isAuthenticated } = useMoralis()
+  const { Moralis } = useMoralis()
   const wrapper = useRef<HTMLDivElement>(null)
   const [loading, setLoading] = useState(false)
   const [primarySite, setPrimarySite] = useState<Site | undefined>()
-  const [primaryCoords, setPrimaryCoords] = useState<
-    google.maps.LatLngLiteral | undefined
-  >(
+  const [primaryCoords, setPrimaryCoords] = useState<google.maps.LatLngLiteral>(
     primarySite !== undefined
       ? ({
           lat: primarySite.lat,
@@ -63,7 +61,7 @@ export default function HomePage(): JSX.Element {
     if (primarySite === undefined) {
       getPrimarySite()
         .then(result => {
-          setLoading(false)
+          console.log('result', result)
         })
         .catch(error => {
           // eslint-disable-next-line no-console
@@ -77,7 +75,7 @@ export default function HomePage(): JSX.Element {
     <main ref={wrapper} className='w-100 flex-col flex-wrap'>
       <section
         id='home'
-        className='w-100 border-1 relative flex h-screen flex-col content-center items-center justify-center bg-darkish'
+        className='w-100 border-1 relative flex h-screen flex-col content-center items-center justify-center'
       >
         <Wrapper apiKey={mapsApiKey} render={render}>
           <HeroMap centerCoords={primaryCoords}>
@@ -93,9 +91,10 @@ export default function HomePage(): JSX.Element {
         <div className='section__content border-1 relative mt-28 max-w-screen-2xl text-center'>
           <h1>Archly</h1>
           <p>The Social App for Archaeology Nerds.</p>
+          {loading ? <p>Loading map...</p> : ''}
         </div>
       </section>
-      <section className='w-100 relative flex h-screen flex-col content-center items-center  justify-center bg-darkish dark:bg-darkish'>
+      <section className='w-100 relative flex h-screen flex-col content-center items-center  justify-center '>
         <div className='section__content w-3/4'>
           <SitesList />
         </div>

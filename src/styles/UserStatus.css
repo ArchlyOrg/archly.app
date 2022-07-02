@@ -1,0 +1,27 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer components {
+  .user-status {
+    & > div {
+      @apply mr-0;
+
+      & > div:first-of-type {
+        @apply bg-gray-700;
+
+        span {
+          @apply font-sans text-green-200;
+        }
+
+        div:not(:first-of-type) {
+          @apply bg-gray-800;
+
+          span {
+            @apply text-green-200;
+          }
+        }
+      }
+    }
+  }
+}

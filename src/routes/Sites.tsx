@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { LocalSitesMap, MapMarker } from '@archly/components'
 import type { Site } from '@archly/types'
@@ -30,18 +30,21 @@ export default function SitesPage(): ReactElement {
 
   const fetchSites = useCallback(async (): Promise<Site[] | string> => {
     try {
+      setLoading(true)
       const Sites = Moralis.Object.extend('Sites') as string
       const query = new Moralis.Query(Sites)
-      query.limit(5)
+      const limit = 5
+      query.limit(limit)
       const result = await query.find()
+      console.log('fetch sites result:', result)
 
       const array = []
       let site = {}
       for (const element of result) {
         site = {
-          siteId: element.id,
           ...site,
-          ...element.attributes
+          ...element.attributes,
+          siteId: element.id
         }
         array.push(site)
       }
@@ -53,6 +56,18 @@ export default function SitesPage(): ReactElement {
       return 'Error fetching sites'
     }
   }, [Moralis.Object, Moralis.Query])
+
+  useEffect(() => {
+    if (!sites) {
+      fetchSites()
+        .then(() => {
+          console.log('Sites fetched')
+        })
+        .catch(error => {
+          console.error('Error fetching sites:', error)
+        })
+    }
+  }, [fetchSites, sites])
 
   return (
     <main ref={wrapper}>

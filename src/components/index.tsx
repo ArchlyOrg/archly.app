@@ -1,4 +1,5 @@
 export * from '@archly/components/buttons'
+export * from '@archly/components/Drawer'
 export { default as Footer } from '@archly/components/Footer'
 export { default as Header } from '@archly/components/Header'
 export { default as Loader } from '@archly/components/Loader'

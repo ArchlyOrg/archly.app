@@ -5,13 +5,14 @@ const daisyUIPlugin = require('daisyui')
 
 module.exports = {
   content: ['index.html', 'src/**/*.tsx'],
+  darkMode: 'class',
   theme: {
     colors: {
       dark: '#242f3e',
       darkish: '#17263c',
       background: '#17263c',
-      blueGlassAlpha: 'rgba(120,169,227,0.3)',
-      greenGlassAlpha: 'rgba(38,52,20,0.7)',
+      blueGlassAlpha: '#12305495',
+      greenGlassAlpha: '#37491D95',
       white: '#ffffff',
       blue: {
         50: '#EAF2FB',
@@ -53,16 +54,6 @@ module.exports = {
     fontFamily: {
       sans: ['"Exo 2"', 'sans-serif'],
       serif: ['serif']
-    }
-  },
-  daisyui: {
-    themes: {
-      light: {
-        primary: '#6D923A'
-      },
-      dark: {
-        primary: '#6D923A'
-      }
     }
   },
   experimental: { optimizeUniversalDefaults: true },

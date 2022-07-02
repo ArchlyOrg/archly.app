@@ -21,9 +21,9 @@ export default function SitesList(): JSX.Element {
     let site = {}
     for (const element of result) {
       site = {
-        siteId: element.id,
         ...site,
-        ...element.attributes
+        ...element.attributes,
+        siteId: element.id
       }
       array.push(site)
     }
@@ -36,9 +36,11 @@ export default function SitesList(): JSX.Element {
   useEffect(() => {
     fetchSites()
       .then(result => {
+        // eslint-disable-next-line no-console
         console.log('Fetched sites:', result)
       })
       .catch(error => {
+        // eslint-disable-next-line no-console
         console.error('Error fetching sites:', error)
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps

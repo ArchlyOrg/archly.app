@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable no-alert */
 /* eslint-disable no-console */
 // import { useQuery, useQuerySingleResult, useCurrentUser, useIsLoggedIn } from 'thin-backend/react';
 import { useRef, useState } from 'react'
 
+import { Drawer } from '@archly/components'
 import type { ButtonProps } from 'react-daisyui'
 import { Button } from 'react-daisyui'
 import {
@@ -12,12 +14,8 @@ import {
   MdLocationPin
 } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
-import {
-  createRecord,
-  deleteRecord,
-  getCurrentUserId,
-  updateRecord
-} from 'thin-backend'
+import usePortal from 'react-useportal'
+import { deleteRecord, getCurrentUserId, updateRecord } from 'thin-backend'
 
 /**
  * NewSiteButton
@@ -31,50 +29,74 @@ import {
  */
 
 export function NewSiteButton(properties: ButtonProps): JSX.Element {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { ref, openPortal, closePortal, isOpen, Portal } = usePortal({
+    bindTo: document.querySelector('#root') as HTMLElement
+  })
   const [isLoading, setIsLoading] = useState(false)
+  const [drawerVisible, setDrawerVisible] = useState(false)
   const { size } = properties
   const reference = useRef<HTMLButtonElement | null>(null)
+
+  const onToggleVisible = (): void => {
+    setDrawerVisible(!drawerVisible)
+    if (drawerVisible) {
+      closePortal()
+    } else {
+      openPortal()
+    }
+  }
+
   function onCreateSite(): void {
     setIsLoading(true)
 
-    createRecord('sites', {
-      name: window.prompt('Site title') ?? '',
-      description: window.prompt('Description?') ?? '',
-      location: window.prompt('Location?') ?? '',
-      coords: '{ "lat": 51.697332, "lng": -2.304548 }',
-      wikipediaUrl: window.prompt('Wikipedia URL?') ?? '',
-      userId: getCurrentUserId(),
-      media: '{}'
-    })
-      .then(() => {
-        setIsLoading(false)
-        if (reference.current) {
-          reference.current.focus()
-        }
-      })
-      .catch(error => {
-        // eslint-disable-next-line no-console
-        console.log('Error creating site:', error)
-        setIsLoading(false)
-      })
-      .finally(() => {
-        setIsLoading(false)
-      })
+    // createRecord('sites', {
+    //   name: window.prompt('Site title') ?? '',
+    //   description: window.prompt('Description?') ?? '',
+    //   location: window.prompt('Location?') ?? '',
+    //   coords: '{ "lat": 51.697332, "lng": -2.304548 }',
+    //   wikipediaUrl: window.prompt('Wikipedia URL?') ?? '',
+    //   userId: getCurrentUserId(),
+    //   media: '{}'
+    // })
+    //   .then(() => {
+    //     setIsLoading(false)
+    //     if (reference.current) {
+    //       reference.current.focus()
+    //     }
+    //   })
+    //   .catch(error => {
+    //     // eslint-disable-next-line no-console
+    //     console.log('Error creating site:', error)
+    //     setIsLoading(false)
+    //   })
+    //   .finally(() => {
+    //     setIsLoading(false)
+    //   })
   }
 
   return (
-    <Button
-      ref={reference}
-      endIcon={<MdAddLocationAlt />}
-      aria-label='Add new site'
-      onClick={onCreateSite}
-      disabled={isLoading}
-      variant='outline'
-      size={size ?? 'md'}
-      color='ghost'
-      className='shadow-black shadow-sm'
-      // {...properties}
-    />
+    <>
+      <Button
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        ref={ref}
+        endIcon={<MdAddLocationAlt />}
+        aria-label='Add new site'
+        onClick={onToggleVisible}
+        disabled={isLoading}
+        variant='outline'
+        size={size ?? 'md'}
+        color='ghost'
+        className='shadow-black shadow-sm'
+      />
+      <Portal>
+        <Drawer isOpen={drawerVisible} setIsOpen={setDrawerVisible}>
+          <div className='flex h-full w-full flex-col items-center justify-center'>
+            <p className='text-center text-white'>Add a new site</p>
+          </div>
+        </Drawer>
+      </Portal>
+    </>
   )
 }
 

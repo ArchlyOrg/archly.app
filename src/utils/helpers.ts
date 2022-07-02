@@ -26,3 +26,11 @@ export const handleLocationError = (browserHasGeolocation: boolean): string => {
     ? 'Error: The Geolocation service failed.'
     : "Error: Your browser doesn't support geolocation."
 }
+
+export const shortenAddress = (address: string): string => {
+  const sliceNumber = 5
+  const start: string = address.toLowerCase().slice(0, sliceNumber)
+  const end: string = address.toLowerCase().slice(Math.max(0, address.length - sliceNumber))
+  const shortAddress = `${start}...${end}`
+  return shortAddress
+}

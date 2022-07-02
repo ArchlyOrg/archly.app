@@ -5,15 +5,15 @@ import { useNavigate } from 'react-router-dom'
 
 export const contentString = (site: Site): string => {
   const { name, description, siteId } = site
-  const link = `/sites/${siteId}`
+  const link = `/site/${siteId}`
 
   const content = `
-  <div className="infoWindowContent" data-id="${siteId}">
-    <div className="siteNotice">
-      <h4 className="firstHeading">${name}</h4>
-      <div className="bodyContent">
+  <div class="info-window-content" data-id="${siteId}">
+    <div class="site-notice">
+      <div class="info-window-content-body">
+        <h4>${name}</h4>
         <p>${description}</p>
-        <button className="infoButton" data-buttonId="${siteId}" href="${link}">More info</button>
+        <button class="info-button" data-buttonId="${siteId}" href="${link}">More info</button>
       </div>
     </div>
   </div>`
@@ -28,26 +28,24 @@ export interface MapMarkerOptionsProperties extends google.maps.MarkerOptions {
 const markerWidth = 75
 const markerHeight = 100
 
-export function MapMarker(options: MapMarkerOptionsProperties): JSX.Element {
-  const marker = useRef<MapMarkerProperties>()
+export function MapMarker(markerOptions: MapMarkerOptionsProperties): null {
+  const marker = useRef<google.maps.Marker>()
   const markerSize = useRef<google.maps.Size>(
     new google.maps.Size(markerWidth, markerHeight)
   )
-  const { site } = options
+  const { site, title, position, visible } = markerOptions
+  // const coords = site ? {lat: Number.parseFloat(site.lat), lng: Number.parseFloat(site.lng)} : position
+  // const options = { title, position, visible } as google.maps.MarkerOptions
   const infoWindow = useMemo(
-    () =>
-      site
-        ? new google.maps.InfoWindow({ content: '', disableAutoPan: true })
-        : undefined,
-    [site]
+    () => new google.maps.InfoWindow({ content: '', disableAutoPan: true }),
+    []
   )
   const navigate = useNavigate()
   const { siteId, name } = site ?? { siteId: undefined, name: undefined }
-  // const contentString = useMemo(() => `<div>${options.site?.name}</div>`, [options.site?.name]);
 
   useEffect(() => {
     if (!marker.current) {
-      marker.current = new google.maps.Marker() as MapMarkerProperties
+      marker.current = new google.maps.Marker()
     }
 
     return () => {
@@ -62,17 +60,25 @@ export function MapMarker(options: MapMarkerOptionsProperties): JSX.Element {
         url: '/md-pin.svg',
         scaledSize: markerSize.current
       })
-      marker.current.setOptions(options)
+      marker.current.setPosition(position)
+      marker.current.setTitle(title)
+      marker.current.setVisible(true)
       marker.current.setAnimation(google.maps.Animation.DROP)
 
       // console.log('marker: ', marker);
-      if (infoWindow && site) {
+      if (site) {
         const zPlus = 1
         marker.current.addListener('click', () => {
           infoWindow.setContent(contentString(site))
           infoWindow.setZIndex(google.maps.Marker.MAX_ZINDEX + zPlus)
-          infoWindow.open(marker.current?.getMap(), marker.current)
+          if (marker.current) {
+            infoWindow.open({
+              map: marker.current.getMap(),
+              anchor: marker.current
+            })
+          }
           // console.log('infoWindow:', infoWindow)
+          console.log('infoWindow:', infoWindow)
         })
       }
     }
@@ -80,21 +86,32 @@ export function MapMarker(options: MapMarkerOptionsProperties): JSX.Element {
       // eslint-disable-next-line unicorn/no-null
       marker.current?.setMap(null)
     }
-  }, [marker, options, siteId, infoWindow, markerSize, navigate, site])
+  }, [
+    marker,
+    siteId,
+    infoWindow,
+    markerSize,
+    navigate,
+    site,
+    position,
+    markerOptions,
+    title
+  ])
 
   useEffect(() => {
-    if (marker.current && infoWindow) {
+    if (marker.current && infoWindow.getContent() !== '') {
       // console.log('marker: ', marker);
+      console.log('infoWindow clcik:', infoWindow)
 
       google.maps.event.addListener(infoWindow, 'domready', () => {
-        if (siteId) {
+        if (siteId !== undefined) {
           const button = document.querySelector(`[data-buttonId="${siteId}"]`)
           if (button) {
             // console.log(button)
             button.addEventListener('click', () => {
               // eslint-disable-next-line no-console
               console.log('button clicked:', siteId)
-              navigate(`/sites/${siteId}`)
+              navigate(`/site/${siteId}`)
             })
           }
         }
@@ -102,13 +119,14 @@ export function MapMarker(options: MapMarkerOptionsProperties): JSX.Element {
     }
 
     return () => {
-      if (infoWindow) {
-        google.maps.event.clearInstanceListeners(infoWindow)
-      }
+      // if (infoWindow) {
+      google.maps.event.clearInstanceListeners(infoWindow)
+      // }
     }
-  }, [infoWindow, marker, siteId, name, options, navigate])
+  }, [infoWindow, marker, siteId, name, navigate])
 
-  // return <>{`${marker.current ?? new google.maps.Marker()}`}</>
+  // eslint-disable-next-line unicorn/no-null
+  return null //
 }
 
 export default MapMarker

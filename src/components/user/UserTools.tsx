@@ -14,8 +14,8 @@ export default function UserTools({
     toggleTheme()
   }
   return (
-    <div className='user-tools inline-flex flex-nowrap items-center space-x-3'>
-      <Button className='btn-primary btn-sm' onClick={onToggleTheme}>
+    <div className='user-tools space-l-3 inline-flex flex-nowrap items-center justify-end'>
+      <Button className='btn-ghost btn-sm' onClick={onToggleTheme}>
         Toggle
       </Button>
       {isLoggedIn ? <NewSiteButton /> : undefined}

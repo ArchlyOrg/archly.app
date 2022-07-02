@@ -6,6 +6,7 @@
   h1 {
     @apply font-sans text-8xl font-black text-green-100;
   }
+
   h2 {
     @apply font-sans text-6xl font-black text-green-100;
   }

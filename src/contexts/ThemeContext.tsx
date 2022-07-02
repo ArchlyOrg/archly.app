@@ -1,26 +1,24 @@
 import type { Dispatch, ReactNode, SetStateAction } from 'react'
-import { createContext, useLayoutEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 
 export const getInitialTheme = (): string => {
-  if (typeof window !== 'undefined' && window.localStorage.length > 0) {
+  if (
+    typeof window !== 'undefined' &&
+    window.localStorage.getItem('current-theme') !== null
+  ) {
     const storedPrefs = window.localStorage.getItem('current-theme')
-
-    const userMedia = window.matchMedia('(prefers-color-scheme: dark)')
-    console.log('storedPrefs', storedPrefs)
-
     if (typeof storedPrefs === 'string') {
+      console.log('storedPrefs', storedPrefs)
       return storedPrefs
     }
-    console.log(
-      'loooo',
-      window.matchMedia('(prefers-color-scheme: dark)').matches
-    )
+
+    const userMedia = window.matchMedia('(prefers-color-scheme: dark)')
 
     if (userMedia.matches) {
       return 'dark'
     }
   }
-  return 'light' // light theme as the default;
+  return 'dark' // light theme as the default;
 }
 
 interface IThemeContext {
@@ -34,7 +32,7 @@ export const ThemeContext = createContext<IThemeContext>({
 })
 
 export interface IThemeProvider {
-  initialTheme?: string
+  initialTheme: string
   children: ReactNode
 }
 const checkTheme = (existing: string): void => {
@@ -54,23 +52,20 @@ export function ThemeProvider({
   initialTheme,
   children
 }: IThemeProvider): JSX.Element {
-  const [theme, setTheme] = useState<string>(initialTheme ?? getInitialTheme())
+  const [theme, setTheme] = useState<string>(getInitialTheme)
 
   if (initialTheme) {
     checkTheme(initialTheme)
   }
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     checkTheme(theme)
   }, [theme])
 
   return (
+    // eslint-disable-next-line react/jsx-no-constructed-context-values
     <ThemeContext.Provider value={{ theme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   )
-}
-
-ThemeProvider.defaultProps = {
-  initialTheme: getInitialTheme()
 }
