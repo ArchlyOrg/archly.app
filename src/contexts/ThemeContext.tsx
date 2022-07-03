@@ -8,17 +8,15 @@ export const getInitialTheme = (): string => {
   ) {
     const storedPrefs = window.localStorage.getItem('current-theme')
     if (typeof storedPrefs === 'string') {
-      console.log('storedPrefs', storedPrefs)
       return storedPrefs
     }
 
     const userMedia = window.matchMedia('(prefers-color-scheme: dark)')
-
     if (userMedia.matches) {
       return 'dark'
     }
   }
-  return 'dark' // light theme as the default;
+  return 'dark' // dark theme as the default;
 }
 
 interface IThemeContext {
@@ -32,14 +30,15 @@ export const ThemeContext = createContext<IThemeContext>({
 })
 
 export interface IThemeProvider {
-  initialTheme: string
+  initialTheme?: string
   children: ReactNode
 }
 const checkTheme = (existing: string): void => {
   if (typeof window !== 'undefined') {
     const root = window.document.documentElement
     const isDark = existing === 'dark'
-    console.log('isDark', isDark)
+    // const userPrefersDark = window.matchMedia('(prefers-color-scheme: dark)')
+    // console.log('checkTheme', isDark, userMedia.matches)
 
     root.classList.remove(isDark ? 'light' : 'dark')
     root.classList.add(existing)
@@ -68,4 +67,8 @@ export function ThemeProvider({
       {children}
     </ThemeContext.Provider>
   )
+}
+
+ThemeProvider.defaultProps = {
+  initialTheme: undefined
 }

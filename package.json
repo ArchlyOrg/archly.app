@@ -44,7 +44,8 @@
     "thin-backend": "^0.10.3",
     "thin-backend-react": "^0.10.1",
     "web-vitals": "^2.1.4",
-    "web3uikit": "^0.1.163"
+    "web3uikit": "^0.1.163",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@babel/core": "7.18.2",

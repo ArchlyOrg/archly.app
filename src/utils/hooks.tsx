@@ -25,18 +25,21 @@ export function useMediaQuery(query: string): boolean {
   return matches
 }
 
+export interface UseDarkModeType {
+  theme: string
+  toggleTheme: () => void
+}
 /**
  * Dark Mode Toggle
  *
  * Allows the user to toggle the light/dark mode of the website.
  *
  */
-export function useDarkMode(): { theme: string; toggleTheme: () => void } {
+export function useDarkMode(): UseDarkModeType {
   const { theme, setTheme } = useContext(ThemeContext)
 
   const toggleTheme = (): void => {
     setTheme(theme === 'light' ? 'dark' : 'light')
-    console.log('toggleTheme', theme)
   }
   return { theme, toggleTheme }
 }

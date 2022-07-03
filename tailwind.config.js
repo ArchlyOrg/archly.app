@@ -14,6 +14,7 @@ module.exports = {
       blueGlassAlpha: '#12305495',
       greenGlassAlpha: '#37491D95',
       white: '#ffffff',
+      black: '#000000',
       blue: {
         50: '#EAF2FB',
         100: '#C4D9F3',

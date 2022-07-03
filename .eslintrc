@@ -113,7 +113,13 @@
         ]
       }
     ],
-
+    "jsx-a11y/label-has-associated-control": [
+      "error",
+      {
+        "controlComponents": ["Field"],
+        "assert": "both"
+      }
+    ],
     "react/no-did-update-set-state": "off",
     "react/no-find-dom-node": "off",
     "react/no-is-mounted": "off",

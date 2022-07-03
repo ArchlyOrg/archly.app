@@ -8,7 +8,7 @@
       @apply mr-0;
 
       & > div:first-of-type {
-        @apply bg-gray-700;
+        @apply bg-gray-700 shadow-sm shadow-gray-900;
 
         span {
           @apply font-sans text-green-200;

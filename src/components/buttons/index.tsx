@@ -1,4 +1,5 @@
 export {
+  DarkModeButton,
   DeleteSiteButton,
   EditSiteButton,
   NewSiteButton,
