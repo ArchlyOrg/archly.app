@@ -7,6 +7,7 @@ module.exports = {
   content: ['index.html', 'src/**/*.tsx'],
   darkMode: 'class',
   theme: {
+    extend: {
     colors: {
       dark: '#242f3e',
       darkish: '#17263c',
@@ -56,6 +57,7 @@ module.exports = {
       sans: ['"Exo 2"', 'sans-serif'],
       serif: ['serif']
     }
+  }
   },
   experimental: { optimizeUniversalDefaults: true },
   plugins: [formsPlugin, typographyPlugin, daisyUIPlugin]

@@ -30,3 +30,13 @@ export interface Site {
   wikiUrl: string | null;
   primarySite: boolean | null;
 }
+
+export interface NewSiteValues {
+  siteName: Site['name']
+  siteDescription: Site['description']
+  siteLocation: Site['location']
+  siteLat: Site['lat']
+  siteLng: Site['lng']
+  siteImgUrl: Site['imgUrl']
+  siteWikiUrl: Site['wikiUrl']
+}
