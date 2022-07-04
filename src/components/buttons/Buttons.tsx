@@ -5,12 +5,6 @@
 import { useState } from 'react'
 
 import { NewSiteDrawer } from '@archly/components'
-import sitesAbi from '@archly/contracts/abi.json'
-import type { NewSiteValues } from '@archly/types'
-import {
-  initialNewSiteValues,
-  sitesContractAddress
-} from '@archly/utils/constants'
 import type { UseDarkModeType } from '@archly/utils/hooks'
 import { useDarkMode } from '@archly/utils/hooks'
 import type { ButtonProps } from 'react-daisyui'
@@ -23,17 +17,9 @@ import {
   MdLightMode,
   MdLocationPin
 } from 'react-icons/md'
-import { useMoralisWeb3Api, useMoralisWeb3ApiCall } from 'react-moralis'
 import { useNavigate } from 'react-router-dom'
 import usePortal from 'react-useportal'
 import { deleteRecord, getCurrentUserId, updateRecord } from 'thin-backend'
-import { useNotification } from 'web3uikit'
-import type { TIconType } from 'web3uikit/dist/components/Icon/collection'
-import type {
-  IPosition,
-  notifyType
-} from 'web3uikit/dist/components/Notification/types'
-
 /**
  * NewSiteButton
  *
@@ -50,44 +36,7 @@ export function NewSiteButton(): JSX.Element {
   const { ref, openPortal, closePortal, isOpen, Portal } = usePortal({
     bindTo: document.querySelector('#portal-root') as HTMLElement
   })
-  const [formData, setFormData] = useState<NewSiteValues>(initialNewSiteValues)
-  const dispatch = useNotification()
-  const { native } = useMoralisWeb3Api()
-  const [isLoading, setIsLoading] = useState(false)
   const [drawerVisible, setDrawerVisible] = useState(false)
-
-  const handleNewNotification = (
-    type: notifyType,
-    icon?: TIconType,
-    position?: IPosition,
-    message?: string,
-    title?: string
-  ): void => {
-    dispatch({
-      type,
-      title,
-      icon,
-      position: position ?? 'topR',
-      message
-    })
-  }
-
-  const options = {
-    chain: 'mumbai' as unknown as 'mumbai',
-    address: sitesContractAddress,
-    function_name: 'addSite',
-    abi: sitesAbi,
-    params: {
-      formData
-    },
-    msgValue: 0
-  }
-  const {
-    fetch: moralisFetch,
-    data: moralisData,
-    error: moralisError,
-    isLoading: moralisIsLoading
-  } = useMoralisWeb3ApiCall(native.runContractFunction, { ...options })
 
   const onToggleVisible = (): void => {
     setDrawerVisible(!drawerVisible)
@@ -105,11 +54,10 @@ export function NewSiteButton(): JSX.Element {
         ref={ref}
         aria-label='Add new site'
         onClick={onToggleVisible}
-        disabled={isLoading}
         variant='link'
-        color='ghost'
+        className='border-0 bg-transparent hover:border-0 hover:bg-transparent'
       >
-        <MdAddLocationAlt className='text-3xl text-green-600 transition-colors delay-200 duration-300 ease-in-out dark:text-blue-400' />
+        <MdAddLocationAlt className='delay-0 text-3xl text-green-600 transition-colors duration-300 ease-in-out hover:text-green-700 dark:text-blue-400 dark:hover:text-blue-200' />
       </Button>
       <Portal>
         <NewSiteDrawer
@@ -315,10 +263,10 @@ export function DarkModeButton(): JSX.Element {
     <Button
       aria-label='Toggle dark/light mode'
       onClick={onHandleClick}
-      color='ghost'
-      className=''
+      variant='link'
+      className='border-0 bg-transparent hover:border-0 hover:bg-transparent'
     >
-      <ModeIcon className='text-shadow text-3xl text-green-600 shadow-black transition-colors delay-200 duration-300 ease-in-out dark:text-blue-400' />
+      <ModeIcon className='delay-0 text-3xl text-green-600 transition-colors duration-300 ease-in-out hover:text-green-700 dark:text-blue-400 dark:hover:text-blue-200' />
     </Button>
   )
 }

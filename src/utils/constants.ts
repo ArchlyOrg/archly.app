@@ -154,7 +154,7 @@ export const siteMapConfig = {
   zoom: siteMapConfigZoom
 }
 
-export const sitesContractAddress = '0x8c728F7bAD0C99cB20a0b6532E264700dea47115'.toLocaleLowerCase()
+export const sitesContractAddress = '0x6D10A2CB392cad85370cF18f923f53B6694401db'.toLowerCase()
 
 const mapsKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string
 export const mapsApiKey: string = mapsKey || ''

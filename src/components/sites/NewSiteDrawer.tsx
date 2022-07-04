@@ -11,7 +11,7 @@ import {
 } from '@archly/utils/constants'
 import { NewSiteValidationSchema } from '@archly/utils/validation'
 import { Field, Form, Formik } from 'formik'
-import { useMoralisWeb3Api, useMoralisWeb3ApiCall } from 'react-moralis'
+import { useMoralis } from 'react-moralis'
 import usePortal from 'react-useportal'
 import { useNotification } from 'web3uikit'
 import type { TIconType } from 'web3uikit/dist/components/Icon/collection'
@@ -29,11 +29,12 @@ function NewSiteDrawer({
   setDrawerVisible
 }: NewSitePortalProperties): JSX.Element {
   const [formData, setFormData] = useState<NewSiteValues>(initialNewSiteValues)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { ref, openPortal, closePortal, isOpen, Portal } = usePortal({
     bindTo: document.querySelector('#portal-root') as HTMLElement
   })
   const dispatch = useNotification()
-  const { native } = useMoralisWeb3Api()
+  const { Moralis } = useMoralis()
 
   const handleNewNotification = (
     type: notifyType,
@@ -51,22 +52,6 @@ function NewSiteDrawer({
     })
   }
 
-  const options = {
-    chain: 'mumbai' as unknown as 'mumbai',
-    address: sitesContractAddress,
-    function_name: 'addSite',
-    abi: sitesAbi,
-    params: {
-      formData
-    },
-    msgValue: 0
-  }
-  const {
-    fetch: moralisFetch,
-    data: moralisData,
-    error: moralisError,
-    isLoading: moralisIsLoading
-  } = useMoralisWeb3ApiCall(native.runContractFunction, { ...options })
   return (
     <Drawer isOpen={drawerVisible} setIsOpen={setDrawerVisible}>
       <div className='relative z-20 h-full w-full text-left '>
@@ -83,31 +68,63 @@ function NewSiteDrawer({
             // eslint-disable-next-line react/jsx-handler-names
             onSubmit={async (data, { setSubmitting }): Promise<void> => {
               setSubmitting(true)
-              console.log('data', data)
+              // console.log('data', data)
               setFormData(data)
+              const options = {
+                chain: 'mumbai' as unknown as 'mumbai',
+                contractAddress: sitesContractAddress,
+                functionName: 'addSite',
+                abi: sitesAbi,
+                params: {
+                  name: data.siteName,
+                  description: data.siteDescription,
+                  location: data.siteLocation,
+                  lat: data.siteLat,
+                  lng: data.siteLng,
+                  imgUrl: data.siteImgUrl,
+                  wikiUrl: data.siteWikiUrl
+                }
+              }
+              handleNewNotification(
+                'info',
+                'matic',
+                'bottomR',
+                `Please sign the transaction to add ${data.siteName}`,
+                'Saving your site!'
+              )
+
               try {
-                await moralisFetch({
-                  params: options
-                })
-                if (moralisData) {
-                  console.log('moralisData', moralisData)
-                  setSubmitting(false)
+                const transaction = await Moralis.executeFunction(options)
+                console.log('transaction', transaction)
+                if (transaction.hash) {
+                  console.log('transaction result', transaction)
+                  handleNewNotification(
+                    'info',
+                    'matic',
+                    'bottomR',
+                    `Tx hash: ${transaction.hash as string}`,
+                    'Transaction in progress!'
+                  )
                 }
-                if (moralisError) {
-                  setSubmitting(false)
-                  throw new Error(moralisError.message)
-                }
+                // if (!transaction.hash) {
+                //   throw new Error("Tx failed. Check console for more info.");
+
+                // }
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
               } catch (error) {
+                // eslint-disable-next-line no-console
+                console.log('transaction falied', error)
+                const errorMessage = 'The addSite transaction failed'
+                // if (error instanceof Error) {
                 handleNewNotification(
                   'error' as unknown as 'error',
                   'info' as unknown as 'info',
                   'bottomR',
-                  moralisError?.message.toString(),
+                  error.message as string,
                   'Error adding site'
                 )
-                console.log('error', error)
-
-                setSubmitting(false)
+                // }
+                console.log(errorMessage)
               }
             }}
           >
@@ -116,7 +133,6 @@ function NewSiteDrawer({
               touched,
               isSubmitting,
               isValid,
-              submitForm,
               values
             }): JSX.Element => (
               <Form>
@@ -339,7 +355,7 @@ function NewSiteDrawer({
                     className={`btn btn-sm ${
                       !isValid ? 'btn-disabled' : 'btn-subtle'
                     }`}
-                    onClick={submitForm}
+                    // onClick={submitForm}
                     disabled={!isValid}
                   >
                     {isSubmitting ? 'Saving...' : 'Save'}

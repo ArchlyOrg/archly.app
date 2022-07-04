@@ -6,9 +6,9 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
+    "dev": "vite",
     "build": "vite build",
     "commit": "cz",
-    "dev": "vite",
     "prepare": "husky install",
     "preview": "vite preview",
     "preview:test": "start-server-and-test preview http://localhost:4173",
@@ -22,7 +22,8 @@
     "run-eslint": "eslint --cache --fix --ignore-path .eslintignore --ext .ts,.tsx src",
     "run-stylelint": "stylelint --cache --fix --ignore-path .gitignore \"**/*.css\"",
     "lint": "run-p run-tsc run-eslint run-stylelint",
-    "validate": "run-p lint test:ci test:e2e:headless"
+    "validate": "run-p lint test:ci test:e2e:headless",
+    "thirdweb:publish": "npx thirdweb publish"
   },
   "dependencies": {
     "@googlemaps/markerclusterer": "^2.0.7",
@@ -30,6 +31,7 @@
     "@react-google-maps/api": "^2.11.8",
     "@thirdweb-dev/contracts": "^2.4.3",
     "daisyui": "^2.15.4",
+    "ethers": "^5.6.9",
     "formik": "^2.2.9",
     "moralis": "^1.8.1",
     "react": "18.1.0",
