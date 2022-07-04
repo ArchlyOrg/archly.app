@@ -4,6 +4,8 @@
 @import './fonts.css';
 @import './typography.css';
 
+@import '../styles/web3uikit.css';
+
 @layer base {
   body {
     @apply overflow-x-hidden bg-gray-100 text-gray-800 dark:bg-background dark:text-gray-100;

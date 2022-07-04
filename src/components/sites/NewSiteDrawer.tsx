@@ -1,10 +1,8 @@
 /* eslint-disable react/jsx-handler-names */
 import type { Dispatch, SetStateAction } from 'react'
-import { useState } from 'react'
 
 import { Drawer } from '@archly/components'
 import sitesAbi from '@archly/contracts/abi.json'
-import type { NewSiteValues } from '@archly/types'
 import {
   initialNewSiteValues,
   sitesContractAddress
@@ -28,10 +26,11 @@ function NewSiteDrawer({
   drawerVisible,
   setDrawerVisible
 }: NewSitePortalProperties): JSX.Element {
-  const [formData, setFormData] = useState<NewSiteValues>(initialNewSiteValues)
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const { ref, openPortal, closePortal, isOpen, Portal } = usePortal({
-    bindTo: document.querySelector('#portal-root') as HTMLElement
+  const { Portal } = usePortal({
+    bindTo: document.querySelector('#portal-root') as HTMLElement,
+    closeOnEsc: true,
+    closeOnOutsideClick: true
   })
   const dispatch = useNotification()
   const { Moralis } = useMoralis()
@@ -68,8 +67,6 @@ function NewSiteDrawer({
             // eslint-disable-next-line react/jsx-handler-names
             onSubmit={async (data, { setSubmitting }): Promise<void> => {
               setSubmitting(true)
-              // console.log('data', data)
-              setFormData(data)
               const options = {
                 chain: 'mumbai' as unknown as 'mumbai',
                 contractAddress: sitesContractAddress,
@@ -111,6 +108,14 @@ function NewSiteDrawer({
 
                 // }
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                await transaction.wait(3)
+                handleNewNotification(
+                  'success',
+                  'matic',
+                  'bottomR',
+                  `${data.siteName} added successfully!`,
+                  'Site added!'
+                )
               } catch (error) {
                 // eslint-disable-next-line no-console
                 console.log('transaction falied', error)
@@ -344,24 +349,26 @@ function NewSiteDrawer({
                     </span>
                   </label>
                 </div>
-                <div className='row form-control mb-0 flex w-full columns-2 flex-row justify-end'>
+                <div className='row btn-group form-control mb-0 flex w-full columns-2 flex-row justify-end'>
                   <input
                     type='reset'
-                    className='btn btn-error btn-sm mr-2'
+                    className='btn btn-outline btn-error btn-sm mr-2 text-white'
                     value='Reset'
                   />
                   <button
                     type='submit'
                     className={`btn btn-sm ${
-                      !isValid ? 'btn-disabled' : 'btn-subtle'
+                      !isValid || isSubmitting
+                        ? 'btn-disabled text-gray-600 line-through'
+                        : 'btn-subtle'
                     }`}
                     // onClick={submitForm}
-                    disabled={!isValid}
+                    aria-disabled={!isValid || isSubmitting}
                   >
                     {isSubmitting ? 'Saving...' : 'Save'}
                   </button>
                 </div>
-                <Portal>
+                {/* <Portal>
                   <div
                     className={`fixed bottom-8 left-8 z-50 rounded-md bg-darkish p-10 transition-all delay-200 duration-300 ${
                       drawerVisible ? 'opacity-100' : 'opacity-0'
@@ -375,7 +382,7 @@ function NewSiteDrawer({
                       }`}</span>
                     </pre>
                   </div>
-                </Portal>
+                </Portal> */}
               </Form>
             )}
           </Formik>

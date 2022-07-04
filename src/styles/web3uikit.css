@@ -1,0 +1,31 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer components {
+  /* Notifications */
+  [data-testid='test-notification-id'] {
+    @apply bg-transparent;
+
+    [data-testid='test-notification-icon-wrapper'] + div {
+      /* @apply bg-green-500; */
+    }
+
+    /* [data-testid='test-icon'] {
+      @apply text-green-200;
+    }
+
+    h5,
+    [data-testid='test-notification-title'] {
+      @apply text-white;
+    }
+
+    [data-testid='test-notification-message'] {
+      @apply text-white;
+    }
+
+    [data-testid='test-notification-x'] {
+      @apply text-white;
+    } */
+  }
+}

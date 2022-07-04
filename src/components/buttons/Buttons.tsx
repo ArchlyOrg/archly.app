@@ -34,7 +34,9 @@ import { deleteRecord, getCurrentUserId, updateRecord } from 'thin-backend'
 export function NewSiteButton(): JSX.Element {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { ref, openPortal, closePortal, isOpen, Portal } = usePortal({
-    bindTo: document.querySelector('#portal-root') as HTMLElement
+    bindTo: document.querySelector('#portal-root') as HTMLElement,
+    closeOnOutsideClick: true,
+    closeOnEscape: true
   })
   const [drawerVisible, setDrawerVisible] = useState(false)
 
