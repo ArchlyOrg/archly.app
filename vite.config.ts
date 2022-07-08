@@ -8,6 +8,10 @@ import { VitePWA } from 'vite-plugin-pwa'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig(({ mode }) => ({
+  build: {
+    outDir: './dist',
+    publicPath: '/'
+  },
   test: {
     include: ['src/**/__tests__/*'],
     globals: true,
