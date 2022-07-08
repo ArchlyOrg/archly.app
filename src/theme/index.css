@@ -48,4 +48,14 @@
       @apply text-inherit;
     }
   }
+
+  .tooltip {
+    &::before {
+      @apply z-0 bg-blue-200 text-slate-800 dark:bg-green-700 dark:text-white;
+    }
+
+    &::after {
+      @apply z-10 border-t-blue-200 dark:border-t-green-700;
+    }
+  }
 }

@@ -44,7 +44,7 @@ export function InfoDrawer({ site }: InfoDrawerProperties): JSX.Element {
     >
       <input id='my-drawer' type='checkbox' className='drawer-toggle' />
       <div className='flex w-full items-center justify-center'>
-        <Button onClick={onOpen} className='btn drawer-button btn-primary'>
+        <Button onClick={onOpen} className='drawer-button btn btn-primary'>
           More info
         </Button>
         <div>More info</div>
@@ -104,6 +104,7 @@ export default function SiteDetail(): JSX.Element {
         setLoading(false)
         return site as Site
       }
+      throw new Error('No site found')
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log('error', error)
@@ -160,18 +161,21 @@ export default function SiteDetail(): JSX.Element {
                   <h1>{currentSite.name}</h1>
                 </div>
                 <div className='mb-2 inline-flex items-center gap-x-2'>
-                  <Tooltip
-                    message={
+                  <div
+                    className='dark:tooltip-ghost tooltip'
+                    data-tip={
                       currentSite.owner
-                        ? `${currentSite.owner} added this site.`
+                        ? `${shortenAddress(
+                            currentSite.owner
+                          )} added this site.`
                         : 'This site was added by an unknown user. 😬'
                     }
                   >
-                    <Badge className='badge' responsive>
+                    <div className='badge badge-md'>
                       <FaUserCircle />
                       {shortenAddress(currentSite.owner)}
-                    </Badge>
-                  </Tooltip>
+                    </div>
+                  </div>
                   <Tooltip message='General location'>
                     <Badge className='badge inline-flex items-center gap-x-1'>
                       <MdLocationOn />
