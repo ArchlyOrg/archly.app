@@ -12,11 +12,11 @@
   }
 
   a {
-    @apply text-green-100;
+    @apply text-green-700 transition-colors duration-200 ease-in-out dark:text-green-200;
   }
 
   section {
-    @apply bg-gray-100 text-gray-800 transition-all delay-200 duration-300 ease-in-out dark:bg-background dark:text-gray-100;
+    @apply bg-gray-100 text-gray-800 transition-all delay-200 duration-200 ease-in-out dark:bg-background dark:text-gray-100;
   }
 
   .gm-style-iw.gm-style-iw-c {
@@ -37,5 +37,15 @@
 
   .info-button {
     @apply mt-1;
+  }
+}
+
+@layer components {
+  .badge {
+    @apply gap-x-1 bg-blue-200 text-slate-800 dark:bg-green-700 dark:text-white;
+
+    a {
+      @apply text-inherit;
+    }
   }
 }

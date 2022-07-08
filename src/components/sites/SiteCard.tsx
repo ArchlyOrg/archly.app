@@ -65,10 +65,12 @@ export default function SiteCard({ site }: SiteCardProperties): JSX.Element {
     if (siteCreatedBy === undefined) {
       fetchSiteUser()
         .then(result => {
+          // eslint-disable-next-line no-console
           console.log('Site card result:', result)
           // setSiteCreatedBy(result)
         })
         .catch(error => {
+          // eslint-disable-next-line no-console
           console.log('error:', error)
         })
     }
@@ -77,7 +79,7 @@ export default function SiteCard({ site }: SiteCardProperties): JSX.Element {
   return (
     <div className='site-card'>
       <div className='site-card__content font-medium'>
-        <h3 className='mb-0 text-2xl font-black text-blue-200'>{name}</h3>
+        <h3 className='mb-0'>{name}</h3>
         <p className='mb-1 text-lg'>{description}</p>
         <p className='mb-1 text-xs'>{location}</p>
         <p className='mb-1 text-xs'>
@@ -87,22 +89,15 @@ export default function SiteCard({ site }: SiteCardProperties): JSX.Element {
           Lat: {lat} Lng: {lng}
         </p>
       </div>
-      {isAuthenticated && account && owner === account ? (
-        <div className='site__actions mt-3 inline-flex items-center gap-x-5'>
-          <ViewSiteButton
-            site={siteId}
-            properties={{ size: 'lg', color: 'ghost' }}
-          />
-          <EditSiteButton
-            site={siteId}
-            properties={{ size: 'lg', variant: 'outline', color: 'ghost' }}
-          />
-          <DeleteSiteButton
-            site={siteId}
-            properties={{ size: 'lg', color: 'ghost' }}
-          />
-        </div>
-      ) : undefined}
+      <div className='site__actions mt-3 inline-flex items-center gap-x-5'>
+        <ViewSiteButton site={siteId} />
+        {isAuthenticated && account && owner === account ? (
+          <>
+            <EditSiteButton site={siteId} />
+            <DeleteSiteButton site={siteId} />
+          </>
+        ) : undefined}
+      </div>
     </div>
   )
 }

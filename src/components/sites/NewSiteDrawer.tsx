@@ -52,7 +52,7 @@ function NewSiteDrawer({
   }
 
   return (
-    <Drawer isOpen={drawerVisible} setIsOpen={setDrawerVisible}>
+    <Drawer isOpen={drawerVisible}>
       <div className='relative z-20 h-full w-full text-left '>
         <h3 className=' mb-0 text-2xl font-bold text-gray-700 dark:text-blue-200'>
           Add new site

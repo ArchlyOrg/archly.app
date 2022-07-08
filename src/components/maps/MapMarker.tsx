@@ -28,7 +28,9 @@ export interface MapMarkerOptionsProperties extends google.maps.MarkerOptions {
 const markerWidth = 75
 const markerHeight = 100
 
-export function MapMarker(markerOptions: MapMarkerOptionsProperties): null {
+export function MapMarker(
+  markerOptions: google.maps.MarkerOptions & MapMarkerOptionsProperties
+): null {
   const marker = useRef<google.maps.Marker>()
   const markerSize = useRef<google.maps.Size>(
     new google.maps.Size(markerWidth, markerHeight)
@@ -36,6 +38,8 @@ export function MapMarker(markerOptions: MapMarkerOptionsProperties): null {
   const { site, title, position, visible } = markerOptions
   // const coords = site ? {lat: Number.parseFloat(site.lat), lng: Number.parseFloat(site.lng)} : position
   // const options = { title, position, visible } as google.maps.MarkerOptions
+  // console.log('MapMarker', markerOptions)
+
   const infoWindow = useMemo(
     () => new google.maps.InfoWindow({ content: '', disableAutoPan: true }),
     []
@@ -55,12 +59,14 @@ export function MapMarker(markerOptions: MapMarkerOptionsProperties): null {
   }, [marker])
 
   useEffect(() => {
-    if (marker.current) {
+    if (marker.current && position) {
+      console.log('MapMarker', marker.current)
+
       marker.current.setIcon({
         url: '/md-pin.svg',
         scaledSize: markerSize.current
       })
-      marker.current.setPosition(position)
+      marker.current.set('position', position as google.maps.LatLng)
       marker.current.setTitle(title)
       marker.current.setVisible(true)
       marker.current.setAnimation(google.maps.Animation.DROP)
@@ -126,7 +132,7 @@ export function MapMarker(markerOptions: MapMarkerOptionsProperties): null {
   }, [infoWindow, marker, siteId, name, navigate])
 
   // eslint-disable-next-line unicorn/no-null
-  return null //
+  return null
 }
 
 export default MapMarker

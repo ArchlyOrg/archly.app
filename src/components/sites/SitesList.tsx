@@ -12,7 +12,7 @@ export default function SitesList(): JSX.Element {
 
   const fetchSites = useCallback(async (): Promise<Site[]> => {
     setLoading(true)
-    const Sites = Moralis.Object.extend('Sites') as string
+    const Sites = Moralis.Object.extend('SitesThirdWeb') as string
     const query = new Moralis.Query(Sites)
 
     const result = await query.find()

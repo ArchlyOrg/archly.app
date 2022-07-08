@@ -6,7 +6,7 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host archly.local --port 3000",
     "build": "vite build",
     "commit": "cz",
     "prepare": "husky install",

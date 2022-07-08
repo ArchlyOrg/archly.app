@@ -35,8 +35,7 @@ export function NewSiteButton(): JSX.Element {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { ref, openPortal, closePortal, isOpen, Portal } = usePortal({
     bindTo: document.querySelector('#portal-root') as HTMLElement,
-    closeOnOutsideClick: true,
-    closeOnEscape: true
+    closeOnOutsideClick: true
   })
   const [drawerVisible, setDrawerVisible] = useState(false)
 
@@ -73,7 +72,6 @@ export function NewSiteButton(): JSX.Element {
 
 export interface DeleteSiteButtonProperties {
   site: string
-  properties: ButtonProps
 }
 
 /**
@@ -87,11 +85,10 @@ export interface DeleteSiteButtonProperties {
  */
 
 export function DeleteSiteButton({
-  site,
-  properties
+  site
 }: DeleteSiteButtonProperties): JSX.Element {
   const [isLoading, setIsLoading] = useState(false)
-  const { size } = properties
+
   // const navigate = useNavigate()
   let confirm = false
 
@@ -128,20 +125,19 @@ export function DeleteSiteButton({
 
   return (
     <Button
-      endIcon={<MdDelete />}
       aria-label='Delete this site'
       onClick={onDeleteSite}
       disabled={isLoading}
-      variant='outline'
-      size={size ?? 'md'}
+      variant='link'
       color='ghost'
-      className='shadow-sm shadow-black'
-    />
+      className='border-0 bg-transparent hover:border-0 hover:bg-transparent'
+    >
+      <MdDelete className='delay-0 text-3xl text-green-600 transition-colors duration-300 ease-in-out hover:text-green-700 dark:text-blue-400 dark:hover:text-blue-200' />
+    </Button>
   )
 }
 export interface EditSiteButtonProperties {
   site: string
-  properties: ButtonProps
 }
 
 /**
@@ -157,11 +153,9 @@ export interface EditSiteButtonProperties {
  * @returns JSX.Element
  */
 export function EditSiteButton({
-  site,
-  properties
+  site
 }: EditSiteButtonProperties): JSX.Element {
   const [isLoading, setIsLoading] = useState(false)
-  const { size } = properties
   function onEditSite(): void {
     if (!site) return
     setIsLoading(true)
@@ -193,21 +187,20 @@ export function EditSiteButton({
 
   return (
     <Button
-      endIcon={<MdEditLocationAlt />}
       aria-label='Edit site'
       onClick={onEditSite}
       disabled={isLoading}
-      variant='outline'
-      size={size ?? 'md'}
+      variant='link'
       color='ghost'
-      className='shadow-sm shadow-black'
-    />
+      className='border-0 bg-transparent hover:border-0 hover:bg-transparent'
+    >
+      <MdEditLocationAlt className='delay-0 text-3xl text-green-600 transition-colors duration-300 ease-in-out hover:text-green-700 dark:text-blue-400 dark:hover:text-blue-200' />
+    </Button>
   )
 }
 
 export interface ViewSiteButtonProperties {
   site: string
-  properties: ButtonProps
 }
 
 /**
@@ -221,26 +214,23 @@ export interface ViewSiteButtonProperties {
  */
 
 export function ViewSiteButton({
-  site,
-  properties
+  site
 }: ViewSiteButtonProperties): JSX.Element {
-  const { size } = properties
   const navigate = useNavigate()
 
   const onHandleClick = (): void => {
-    navigate(`/sites/${site}`)
+    navigate(`/site/${site}`)
   }
 
   return (
     <Button
-      endIcon={<MdLocationPin />}
       aria-label='View this site'
       onClick={onHandleClick}
-      variant='outline'
-      size={size ?? 'md'}
-      color='ghost'
-      className='shadow-sm shadow-black'
-    />
+      variant='link'
+      className='border-0 bg-transparent hover:border-0 hover:bg-transparent'
+    >
+      <MdLocationPin className='delay-0 text-3xl text-green-600 transition-colors duration-300 ease-in-out hover:text-green-700 dark:text-blue-400 dark:hover:text-blue-200' />
+    </Button>
   )
 }
 

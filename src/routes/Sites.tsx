@@ -1,10 +1,9 @@
 import type { ReactElement } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { LocalSitesMap, MapMarker } from '@archly/components'
+import { LocalSitesMap } from '@archly/components'
 import type { Site } from '@archly/types'
-import { mapsApiKey } from '@archly/utils/constants'
-import { Status, Wrapper } from '@googlemaps/react-wrapper'
+import { Status } from '@googlemaps/react-wrapper'
 import { FaSpinner } from 'react-icons/fa'
 import { useMoralis } from 'react-moralis'
 
@@ -22,7 +21,7 @@ const render = (status: Status): ReactElement => {
 }
 
 export default function SitesPage(): ReactElement {
-  const { Moralis, account, isAuthenticated } = useMoralis()
+  const { Moralis } = useMoralis()
   const [sites, setSites] = useState<Site[]>()
   const [loading, setLoading] = useState<boolean>(false)
   // const isLoggedIn = useIsLoggedIn()
@@ -31,7 +30,7 @@ export default function SitesPage(): ReactElement {
   const fetchSites = useCallback(async (): Promise<Site[] | string> => {
     try {
       setLoading(true)
-      const Sites = Moralis.Object.extend('Sites') as string
+      const Sites = Moralis.Object.extend('SitesThirdWeb') as string
       const query = new Moralis.Query(Sites)
       const limit = 5
       query.limit(limit)
@@ -52,6 +51,7 @@ export default function SitesPage(): ReactElement {
       setSites(array as Site[])
       return array as Site[]
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Error fetching sites:', error)
       return 'Error fetching sites'
     }
@@ -60,10 +60,14 @@ export default function SitesPage(): ReactElement {
   useEffect(() => {
     if (!sites) {
       fetchSites()
-        .then(() => {
-          console.log('Sites fetched')
+        .then(result => {
+          if (result.length > 0) {
+            // setSites(result as Site[])
+            // console.log('result:', result)
+          }
         })
         .catch(error => {
+          // eslint-disable-next-line no-console
           console.error('Error fetching sites:', error)
         })
     }
@@ -72,28 +76,8 @@ export default function SitesPage(): ReactElement {
   return (
     <main ref={wrapper}>
       <section className='w-100 relative flex h-screen flex-col content-center items-center  justify-center bg-darkish dark:bg-darkish'>
+        <LocalSitesMap sites={sites} />
         <div className='section__content w-3/4'>
-          <Wrapper apiKey={mapsApiKey} render={render}>
-            <LocalSitesMap>
-              {sites && sites.length > 0
-                ? sites.map(site => {
-                    const { siteId, name, lat, lng } = site
-
-                    return (
-                      <MapMarker
-                        title={name}
-                        key={`marker-${siteId}`}
-                        position={
-                          { lat, lng } as unknown as google.maps.LatLngLiteral
-                        }
-                        visible
-                        site={site}
-                      />
-                    )
-                  })
-                : undefined}
-            </LocalSitesMap>
-          </Wrapper>
           <div className='relative'>
             <div className='flex flex-row gap-2'>
               <h1>archly sites</h1>

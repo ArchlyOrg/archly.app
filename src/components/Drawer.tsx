@@ -1,9 +1,8 @@
-import type { KeyboardEvent, MouseEvent } from 'react'
-import { useCallback, useRef } from 'react'
+import { useRef } from 'react'
 
 export interface DrawerProperties {
   isOpen: boolean
-  setIsOpen: (isOpen: boolean) => void
+  // setIsOpen: (isOpen: boolean) => void
   children: React.ReactNode
 }
 
@@ -16,40 +15,38 @@ export interface DrawerProperties {
  * @param children: React.ReactNode - The contents of the drawer
  * @returns JSX.Element
  */
-export function Drawer({
-  children,
-  isOpen,
-  setIsOpen
-}: DrawerProperties): JSX.Element {
+export function Drawer({ children, isOpen }: DrawerProperties): JSX.Element {
   const drawerReference = useRef<HTMLDivElement>(null)
   const overlayReference = useRef<HTMLDivElement>(null)
   const contentReference = useRef<HTMLDivElement>(null)
 
   // handle closing the drawer when the overlay is clicked or escape is pressed
-  const handleKeyUp = useCallback((event: KeyboardEvent<HTMLElement>) => {
-    // setIsOpen(false)
-    console.log('keyup:', event.key)
-  }, [])
+  // const handleKeyUp = useCallback((event: KeyboardEvent<HTMLElement>) => {
+  //   // setIsOpen(false)
+  //   console.log('keyup:', event.key)
+  // }, [])
 
-  // handle closing the drawer when the overlay is clicked
-  const handleClick = useCallback(
-    (event: MouseEvent<HTMLElement>) => {
-      if (event.target === overlayReference.current) {
-        setIsOpen(false)
-      }
-    },
-    [setIsOpen]
-  )
+  // // handle closing the drawer when the overlay is clicked
+  // const handleClick = useCallback(
+  //   (event: MouseEvent<HTMLElement>) => {
+  //     if (event.target === overlayReference.current) {
+  //       setIsOpen(false)
+  //     }
+  //   },
+  //   [setIsOpen]
+  // )
 
   return (
     <div
       ref={drawerReference}
-      className='fixed top-0 left-0 right-0 z-0 h-screen w-screen overflow-hidden'
+      className={`fixed top-0 left-0 right-0 z-0 h-screen w-screen overflow-hidden transition-all ${
+        isOpen ? 'z-0' : '-z-10'
+      }`}
     >
       <div
         ref={overlayReference}
         className={`delay-0 absolute top-0 left-0 right-0 z-0 h-full w-screen transform bg-green-900 shadow-xl  backdrop-filter transition-all duration-300 ease-in-out  backdrop:blur-xl ${
-          isOpen ? 'opacity-70 ' : ' opacity-0 '
+          isOpen ? 'opacity-70 ' : 'pointer-events-none opacity-0 '
         }`}
       >
         {/* <div

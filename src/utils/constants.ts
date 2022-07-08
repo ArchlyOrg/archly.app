@@ -1,4 +1,4 @@
-import type { NewSiteValues } from "@archly/types"
+import type { NewSiteValues } from '@archly/types'
 
 export const initialSites = [
   {
@@ -146,15 +146,19 @@ export const heroMapConfig = {
 const localSiteConfigZoom = 8
 export const localSitesMapConfig = {
   zoom: localSiteConfigZoom,
-  styles: mapStyles.styles
+  styles: mapStyles.styles,
+  disableDefaultUI: true
 }
 
 const siteMapConfigZoom = 16
 export const siteMapConfig = {
+  mapTypeId: 'satellite',
+  disableDefaultUI: true,
   zoom: siteMapConfigZoom
 }
 
-export const sitesContractAddress = '0x6D10A2CB392cad85370cF18f923f53B6694401db'.toLowerCase()
+export const sitesContractAddress =
+  '0x6D10A2CB392cad85370cF18f923f53B6694401db'.toLowerCase()
 
 const mapsKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string
 export const mapsApiKey: string = mapsKey || ''

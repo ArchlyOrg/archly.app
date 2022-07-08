@@ -1,11 +1,6 @@
 import type { ReactElement } from 'react'
 import { useRef } from 'react'
 
-import { initThinBackend } from 'thin-backend'
-// import { useCurrentUser } from 'thin-backend-react';
-
-initThinBackend({ host: import.meta.env.VITE_BACKEND_URL as string })
-
 export default function About(): ReactElement {
   // const user = useCurrentUser()
   const wrapper = useRef(null)

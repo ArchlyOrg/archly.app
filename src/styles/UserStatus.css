@@ -7,6 +7,14 @@
     & > div {
       @apply mr-0;
 
+      & > button {
+        @apply bg-gray-300 transition-colors duration-200 ease-in-out dark:bg-gray-800;
+
+        span {
+          @apply text-gray-700 transition-colors duration-200 ease-in-out dark:text-gray-200;
+        }
+      }
+
       & > div:first-of-type {
         @apply bg-gray-700 shadow-sm shadow-gray-900;
 

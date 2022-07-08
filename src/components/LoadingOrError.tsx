@@ -5,7 +5,7 @@ interface Properties {
 }
 export default function LoadingOrError({ error }: Properties): ReactElement {
   return (
-    <div className='flex min-h-screen items-center justify-center'>
+    <div className='absolute top-0 left-0 flex h-screen w-full items-center justify-center'>
       <h1 className='text-xl' data-testid='LoadingOrError'>
         {error ? error.message : 'Loading...🥳'}
       </h1>

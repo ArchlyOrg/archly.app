@@ -1,38 +1,14 @@
-import type { ReactElement } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { MapMarker, SiteMap } from '@archly/components'
-import { mapsApiKey } from '@archly/utils/constants'
-import { copyText } from '@archly/utils/helpers'
-import { Status, Wrapper } from '@googlemaps/react-wrapper'
+import { LoadingOrError, SiteMap } from '@archly/components'
+import type { Site } from '@archly/types'
+import { copyText, shortenAddress } from '@archly/utils/helpers'
 import { Badge, Button, Drawer, Tooltip } from 'react-daisyui'
-import {
-  FaCopy,
-  FaExternalLinkAlt,
-  FaSpinner,
-  FaUserCircle
-} from 'react-icons/fa'
+import { FaCopy, FaExternalLinkAlt, FaUserCircle } from 'react-icons/fa'
 import { HiFingerPrint, HiFire } from 'react-icons/hi'
 import { MdLocationOn } from 'react-icons/md'
-import { Link, useParams } from 'react-router-dom'
-import type { Site } from 'thin-backend'
-import { initThinBackend, query } from 'thin-backend'
-import { useQuerySingleResult } from 'thin-backend-react'
-
-initThinBackend({ host: process.env.NEXT_PUBLIC_BACKEND_URL })
-
-const render = (status: Status): ReactElement => {
-  switch (status) {
-    case Status.LOADING:
-      return <FaSpinner fontSize='2xl' color='green' />
-    case Status.FAILURE:
-      return <p>Error: Couldn&apos;t load map</p>
-    case Status.SUCCESS:
-      return <SiteMap />
-    default:
-      return <p>Unkown status</p>
-  }
-}
+import { useMoralis } from 'react-moralis'
+import { useParams } from 'react-router-dom'
 
 const side = (
   <ul className='menu w-80 overflow-y-auto bg-base-200 p-4'>
@@ -68,7 +44,7 @@ export function InfoDrawer({ site }: InfoDrawerProperties): JSX.Element {
     >
       <input id='my-drawer' type='checkbox' className='drawer-toggle' />
       <div className='flex w-full items-center justify-center'>
-        <Button onClick={onOpen} className='btn btn-primary drawer-button'>
+        <Button onClick={onOpen} className='btn drawer-button btn-primary'>
           More info
         </Button>
         <div>More info</div>
@@ -84,99 +60,90 @@ export function InfoDrawer({ site }: InfoDrawerProperties): JSX.Element {
 
 export default function SiteDetail(): JSX.Element {
   // const navigate = useNavigate()
+  const { Moralis } = useMoralis()
   const { siteId } = useParams()
-  // console.log('siteId', siteId);
+  console.log('siteId', siteId)
 
   // const {description} = site;
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [currentSite, setCurrentSite] = useState<Site | undefined>()
   const siteCoords = useRef<{ lat: number; lng: number } | undefined>()
   // const isLoggedIn = useIsLoggedIn()
-  const siteCreator = useQuerySingleResult(
-    query('users').where('id', currentSite?.userId as string)
-  )
-  const [currentCoords, setCurrentCoords] = useState<
-    google.maps.LatLngLiteral | undefined
-  >()
+
+  const [currentCoords, setCurrentCoords] =
+    useState<google.maps.LatLngLiteral>()
   const wrapper = useRef<HTMLDivElement>(null)
-  const getCurrentSite = useCallback(async () => {
+  const getCurrentSite = useCallback(async (): Promise<Site | undefined> => {
     // console.log('Fetching site...')
-    setLoading(true)
     try {
-      const site = await query('sites')
-        .where('id', siteId as string)
-        .fetchOne()
-      // const { id, name, description, coords, userId } = site;
-      console.log('site', site)
+      setLoading(true)
+      const Sites = Moralis.Object.extend('SitesThirdWeb') as string
+      const query = new Moralis.Query(Sites)
+      query.equalTo('objectId', siteId)
 
-      if (site.id === siteId && siteCoords.current !== undefined) {
-        const coords = JSON.parse(site.coords) as google.maps.LatLngLiteral
-        const parsed = {
-          lat: coords.lat,
-          lng: coords.lng
+      let site = {}
+      const result = await query.find()
+      console.log('detail result', result)
+
+      if (result.length > 0) {
+        console.log('hello', result[0])
+
+        for (const element of result) {
+          site = {
+            ...site,
+            ...element.attributes,
+            siteId: element.id
+          }
         }
-        siteCoords.current = parsed
 
-        setCurrentSite(site)
-        setCurrentCoords(JSON.parse(site.coords) as google.maps.LatLngLiteral)
+        setCurrentSite(site as Site)
+        setCurrentCoords({
+          lat: Number.parseFloat(result[0].attributes.lat as string),
+          lng: Number.parseFloat(result[0].attributes.lng as string)
+        })
         setLoading(false)
-        // console.log('current:', currentSite)
+        return site as Site
       }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log('error', error)
+      return undefined
     }
-  }, [setLoading, setCurrentSite, siteId])
-
-  // getCurrentSite();
+  }, [Moralis.Object, Moralis.Query, siteId])
 
   const onCopy = (): void => {
     // let copied: boolean
 
     if (siteCoords.current !== undefined) {
       const text = `${siteCoords.current.lat}  ${siteCoords.current.lng}`
-
       copyText(text)
-
-      // return true
     }
-    // return false
   }
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && !currentSite) {
+    if (currentSite === undefined) {
+      console.log('currentSite is undefined')
+
       getCurrentSite()
-        .then(() => {
-          // console.log('current:', currentSite)
+        .then(result => {
+          // eslint-disable-next-line no-console
+          console.log('site fetched & added', result?.name)
         })
         .catch(error => {
           // eslint-disable-next-line no-console
-          console.log('error', error)
+          console.log('error:', error)
+          setLoading(false)
         })
     }
   }, [currentSite, getCurrentSite])
 
-  console.log('currentCoords:', currentCoords)
-
   return (
     <div ref={wrapper}>
       <main className='flex w-screen flex-col flex-nowrap '>
-        <section>
-          <div className='section__content w-100'>
-            <Wrapper apiKey={mapsApiKey} render={render}>
-              {!loading && currentCoords ? (
-                <SiteMap centerCoords={currentCoords}>
-                  <MapMarker
-                    title={currentSite?.name}
-                    key={currentSite?.id}
-                    position={currentCoords}
-                    visible
-                  />
-                </SiteMap>
-              ) : undefined}
-            </Wrapper>
-            <div className='w-3xl relative mx-auto'>
-              {/* maxW='3xl'
+        <section className='w-100 border-1 relative flex h-screen flex-col items-center justify-center'>
+          <SiteMap centerCoords={currentCoords} />
+          <div className='section__content relative mt-28 w-3/4'>
+            {/* maxW='3xl'
 							sx={{
 								'p:first-of-type': {
 									fontSize: 'xl',
@@ -185,81 +152,81 @@ export default function SiteDetail(): JSX.Element {
 								}
 							}}
 						> */}
-              {!loading &&
-              currentSite &&
-              siteCreator &&
-              siteCoords.current !== undefined ? (
-                <>
-                  <div className='mb-3 inline-flex items-center gap-x-0'>
-                    <h1>{currentSite.name}</h1>
-                  </div>
-                  <div className='mb-2 inline-flex items-center gap-x-2'>
-                    <Tooltip
-                      message={
-                        siteCreator.username
-                          ? `${siteCreator.username} added this site.`
-                          : 'This site was added by an unknown user. 😬'
-                      }
-                    >
-                      <Badge className='tag' responsive>
-                        <FaUserCircle />
-                        {siteCreator.username}
+            {!loading &&
+            currentSite !== undefined &&
+            currentCoords !== undefined ? (
+              <div className='relative flex w-3/4 flex-col'>
+                <div className='mb-3 inline-flex items-center gap-x-0'>
+                  <h1>{currentSite.name}</h1>
+                </div>
+                <div className='mb-2 inline-flex items-center gap-x-2'>
+                  <Tooltip
+                    message={
+                      currentSite.owner
+                        ? `${currentSite.owner} added this site.`
+                        : 'This site was added by an unknown user. 😬'
+                    }
+                  >
+                    <Badge className='badge' responsive>
+                      <FaUserCircle />
+                      {shortenAddress(currentSite.owner)}
+                    </Badge>
+                  </Tooltip>
+                  <Tooltip message='General location'>
+                    <Badge className='badge inline-flex items-center gap-x-1'>
+                      <MdLocationOn />
+                      {currentSite.location}
+                    </Badge>
+                  </Tooltip>
+                  <Tooltip message='Users visited'>
+                    <Badge className='badge inline-flex items-center gap-x-1'>
+                      <HiFingerPrint />
+                      23
+                    </Badge>
+                  </Tooltip>
+                  <Tooltip message='User likes'>
+                    <Badge className='badge inline-flex items-center gap-x-1'>
+                      <HiFire />
+                      36
+                    </Badge>
+                  </Tooltip>
+                </div>
+                <div className='inline-flex items-center gap-x-2'>
+                  <Tooltip message='Click me to copy lat/lng to clipboard'>
+                    <Badge className='badge inline-flex items-center gap-x-1'>
+                      <MdLocationOn />
+                      Lat: {currentCoords.lat} Lng: {currentCoords.lng}
+                      <FaCopy
+                        aria-label='Select to copy lat/lng coordinates'
+                        onClick={onCopy}
+                      />
+                    </Badge>
+                  </Tooltip>
+                  {currentSite.wikiUrl ? (
+                    <Tooltip message='View on Wikipedia'>
+                      <Badge className='badge'>
+                        <a
+                          href={currentSite.wikiUrl}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                        >
+                          Wikipedia
+                        </a>
+                        <FaExternalLinkAlt className='text-xs' />
                       </Badge>
                     </Tooltip>
-                    <Tooltip message='General location'>
-                      <Badge>
-                        <MdLocationOn />
-                        {currentSite.location}
-                      </Badge>
-                    </Tooltip>
-                    <Tooltip message='Users visited'>
-                      <Badge>
-                        <HiFingerPrint />
-                        23
-                      </Badge>
-                    </Tooltip>
-                    <Tooltip message='User likes'>
-                      <Badge>
-                        <HiFire />
-                        36
-                      </Badge>
-                    </Tooltip>
-                  </div>
-                  <div className='inline-flex items-center gap-x-2'>
-                    <Tooltip message='Click me to copy lat/lng to clipboard'>
-                      <Badge>
-                        <MdLocationOn />
-                        Lat: {siteCoords.current.lat} Lng:{' '}
-                        {siteCoords.current.lng}
-                        <FaCopy
-                          aria-label='Select to copy lat/lng coordinates'
-                          onClick={onCopy}
-                        />
-                      </Badge>
-                    </Tooltip>
-                    {currentSite.wikipediaUrl ? (
-                      <Tooltip message='View on Wikipedia'>
-                        <Badge>
-                          <Link
-                            to={currentSite.wikipediaUrl}
-                            color='blue.700'
-                            target='_blank'
-                          >
-                            Wikipedia{' '}
-                            <FaExternalLinkAlt className='text-blue mx-2' />
-                          </Link>
-                        </Badge>
-                      </Tooltip>
-                    ) : undefined}
-                  </div>
-                  <p className='mt-5'>{currentSite.description}</p>
-                  <div className='mt-5 inline-flex items-center gap-x-2'>
-                    <InfoDrawer site={currentSite} />
-                    <Button>View Gallery</Button>
-                  </div>
-                </>
-              ) : undefined}
-            </div>
+                  ) : undefined}
+                </div>
+                <p className='mt-5 font-bold text-white dark:text-white'>
+                  {currentSite.description}
+                </p>
+                <div className='mt-5 inline-flex items-center gap-x-2'>
+                  <Button>View Gallery</Button>
+                </div>
+              </div>
+            ) : (
+              <LoadingOrError />
+            )}
           </div>
         </section>
       </main>

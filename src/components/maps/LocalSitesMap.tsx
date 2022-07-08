@@ -1,37 +1,42 @@
-import type { ReactNode } from 'react'
-import {
-  Children,
-  cloneElement,
-  isValidElement,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-// import type { Site } from 'thin-backend'
-import Loader from '@archly/components/Loader'
-import { heroMapConfig, localSitesMapConfig } from '@archly/utils/constants'
+import { LoadingOrError } from '@archly/components'
+import type { Site } from '@archly/types'
+import {
+  heroMapConfig,
+  localSitesMapConfig,
+  mapsApiKey
+} from '@archly/utils/constants'
 import { handleLocationError } from '@archly/utils/helpers'
-import { MarkerClusterer } from '@googlemaps/markerclusterer'
+import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
+// import type { Site } from 'thin-backend'
+// import { MarkerClusterer } from '@googlemaps/markerclusterer'
 
 import type { MapMarkerProperties } from './MapMarker'
 
 interface LocalSitesMapProperties {
-  children?: ReactNode
+  sites?: Site[]
 }
 
 // interface MarkerClusterProperties extends MarkerClusterer {
 //   site: Site
 // }
 
-function LocalSitesMap({ children }: LocalSitesMapProperties): JSX.Element {
+function LocalSitesMap({ sites }: LocalSitesMapProperties): JSX.Element {
+  const winDefined = typeof window !== 'undefined'
+
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: mapsApiKey,
+    preventGoogleFontsLoading: true
+  })
   const reference = useRef<HTMLDivElement>(null)
-  const [map, setMap] = useState<google.maps.Map | undefined>()
+  const [map, setMap] = useState<google.maps.Map | null>()
   const { zoom, styles } = localSitesMapConfig
   const { center, disableDefaultUI } = heroMapConfig
-  const markers: MapMarkerProperties[] = useMemo(() => [], [])
+  const markers: google.maps.Marker[] & MapMarkerProperties[] = useMemo(
+    () => [],
+    []
+  )
   // const offsetX = -0.25
   // const offsetY = 0.6
   // const markerWidth = 75
@@ -41,6 +46,19 @@ function LocalSitesMap({ children }: LocalSitesMapProperties): JSX.Element {
   // const markerSize = useRef<google.maps.Size>(
   //   new google.maps.Size(markerWidth, markerHeight)
   // )
+  const onLoad = useCallback(
+    (m: google.maps.Map) => {
+      const bounds = new google.maps.LatLngBounds(center)
+      m.fitBounds(bounds)
+      setMap(m)
+    },
+    [center]
+  )
+
+  const onUnmount = useCallback(() => {
+    // eslint-disable-next-line unicorn/no-null
+    setMap(null)
+  }, [])
   const latlngBounds = useRef(new google.maps.LatLngBounds())
   const timeout = 10_000
   const geoLocation = useCallback(() => {
@@ -75,7 +93,7 @@ function LocalSitesMap({ children }: LocalSitesMapProperties): JSX.Element {
   }, [userPos])
 
   useEffect(() => {
-    if (reference.current && !map) {
+    if (reference.current && !map && winDefined) {
       setMap(
         new google.maps.Map(reference.current as HTMLElement, {
           center: userPos
@@ -93,10 +111,19 @@ function LocalSitesMap({ children }: LocalSitesMapProperties): JSX.Element {
     if (!userPos) {
       geoLocation()
     }
-  }, [center, disableDefaultUI, map, styles, userPos, geoLocation, zoom])
+  }, [
+    center,
+    disableDefaultUI,
+    map,
+    styles,
+    userPos,
+    geoLocation,
+    zoom,
+    winDefined
+  ])
 
   useEffect(() => {
-    if (userPos && map) {
+    if (userPos && map && winDefined) {
       // console.log('latlng', latlngBounds)
       // console.log('Your position:', userPosition)
       // console.log('latlngBounds:', latlngBounds)
@@ -135,47 +162,58 @@ function LocalSitesMap({ children }: LocalSitesMapProperties): JSX.Element {
       //   scaledSize: markerSize.current,
       // })
     }
-  }, [map, userPos, latlngBounds, markers])
+  }, [map, userPos, latlngBounds, markers, winDefined])
+
+  if (loadError) {
+    return <LoadingOrError error={loadError} />
+  }
 
   return (
-    <>
-      <div ref={reference} className='absolute top-0 left-0 h-screen w-full' />
-      {Children.map(children, (child, index) => {
-        if (isValidElement(child)) {
-          const { site } = child.props as MapMarkerProperties
+    <div ref={reference} className='map absolute top-0 left-0 h-screen w-full'>
+      {isLoaded ? (
+        <GoogleMap
+          mapContainerStyle={{
+            height: '100%',
+            width: '100%',
+            position: 'absolute',
+            top: 0,
+            left: 0
+          }}
+          options={localSitesMapConfig}
+          zoom={zoom}
+          center={center}
+          onLoad={onLoad}
+          onUnmount={onUnmount}
+        >
+          {sites && sites.length > 0
+            ? sites.map(site => {
+                const { siteId, name, lat, lng } = site
+                const position = {
+                  lat: Number.parseFloat(lat),
+                  lng: Number.parseFloat(lng)
+                } as google.maps.LatLngLiteral
 
-          // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-          if (index === 5) {
-            console.log('markers 2:', markers)
-            const markerCluster = new MarkerClusterer({
-              map,
-              markers
-            })
-            return cloneElement(child, {
-              markerCluster
-            })
-          }
-          const { lat, lng } = center as google.maps.LatLngLiteral
-          const position = site
-            ? {
-                lat: site.lat as unknown as number,
-                lng: site.lng as unknown as number
-              }
-            : { lat, lng }
-          markers.push(child.props as MapMarkerProperties)
-          latlngBounds.current.extend(new google.maps.LatLng(position))
-          return cloneElement(child, {
-            map
-          })
-        }
-        return loading ? <Loader /> : child
-      })}
-    </>
+                return (
+                  <Marker
+                    title={name}
+                    key={`marker-${siteId}`}
+                    position={position}
+                    visible
+                    // site={site}
+                  />
+                )
+              })
+            : undefined}
+        </GoogleMap>
+      ) : (
+        <LoadingOrError />
+      )}
+    </div>
   )
 }
 
 export default LocalSitesMap
 
 LocalSitesMap.defaultProps = {
-  children: undefined
+  sites: undefined
 }
