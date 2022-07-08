@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-handler-names */
-import type { Dispatch, SetStateAction } from 'react'
+// import type { Dispatch, SetStateAction } from 'react'
 
 import { Drawer } from '@archly/components'
 import sitesAbi from '@archly/contracts/abi.json'
@@ -10,7 +10,7 @@ import {
 import { NewSiteValidationSchema } from '@archly/utils/validation'
 import { Field, Form, Formik } from 'formik'
 import { useMoralis } from 'react-moralis'
-import usePortal from 'react-useportal'
+// import usePortal from 'react-useportal'
 import { useNotification } from 'web3uikit'
 import type { TIconType } from 'web3uikit/dist/components/Icon/collection'
 import type {
@@ -20,21 +20,21 @@ import type {
 
 export interface NewSitePortalProperties {
   drawerVisible: boolean
-  setDrawerVisible: Dispatch<SetStateAction<boolean>>
+  // setDrawerVisible: Dispatch<SetStateAction<boolean>>
 }
 function NewSiteDrawer({
-  drawerVisible,
-  setDrawerVisible
-}: NewSitePortalProperties): JSX.Element {
+  drawerVisible
+}: // setDrawerVisible
+NewSitePortalProperties): JSX.Element {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const { Portal } = usePortal({
-    bindTo: document.querySelector('#portal-root') as HTMLElement,
-    closeOnEsc: true,
-    closeOnOutsideClick: true
-  })
+  // const { Portal } = usePortal({
+  //   bindTo: document.querySelector('#portal-root') as HTMLElement,
+  //   closeOnEsc: true,
+  //   closeOnOutsideClick: true
+  // })
   const dispatch = useNotification()
   const { Moralis } = useMoralis()
-
+  const txConfirmationsToWait = 3
   const handleNewNotification = (
     type: notifyType,
     icon?: TIconType,
@@ -92,8 +92,10 @@ function NewSiteDrawer({
 
               try {
                 const transaction = await Moralis.executeFunction(options)
+                // eslint-disable-next-line no-console
                 console.log('transaction', transaction)
                 if (transaction.hash) {
+                  // eslint-disable-next-line no-console
                   console.log('transaction result', transaction)
                   handleNewNotification(
                     'info',
@@ -108,7 +110,7 @@ function NewSiteDrawer({
 
                 // }
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                await transaction.wait(3)
+                await transaction.wait(txConfirmationsToWait)
                 handleNewNotification(
                   'success',
                   'matic',
@@ -119,27 +121,23 @@ function NewSiteDrawer({
               } catch (error) {
                 // eslint-disable-next-line no-console
                 console.log('transaction falied', error)
-                const errorMessage = 'The addSite transaction failed'
+                const siteError: Error = error as Error
+                const errorMessage = `The addSite transaction failed: ${siteError.message}`
                 // if (error instanceof Error) {
                 handleNewNotification(
                   'error' as unknown as 'error',
                   'info' as unknown as 'info',
                   'bottomR',
-                  error.message as string,
+                  `${errorMessage}`,
                   'Error adding site'
                 )
                 // }
+                // eslint-disable-next-line no-console
                 console.log(errorMessage)
               }
             }}
           >
-            {({
-              errors,
-              touched,
-              isSubmitting,
-              isValid,
-              values
-            }): JSX.Element => (
+            {({ errors, touched, isSubmitting, isValid }): JSX.Element => (
               <Form>
                 <div className='form-control mb-3 w-full'>
                   <label

@@ -17,6 +17,10 @@
 
   section {
     @apply bg-gray-100 text-gray-800 transition-all delay-200 duration-200 ease-in-out dark:bg-background dark:text-gray-100;
+
+    .section-content {
+      @apply z-40;
+    }
   }
 
   .gm-style-iw.gm-style-iw-c {

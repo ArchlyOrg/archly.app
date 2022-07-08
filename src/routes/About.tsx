@@ -26,7 +26,7 @@ export default function About(): ReactElement {
           2xl:bg-[url('/assets/backgrounds/poulnabrone-dolmen-2xl.jpg')]
           `}
         />
-        <div className='section__content z-10 w-3/4 max-w-3xl'>
+        <div className='section-content z-40 w-3/4 max-w-3xl'>
           <h1>What is archly?</h1>
           <p>
             archly is a social app for Archaeology nerds. It&apos;s a place to

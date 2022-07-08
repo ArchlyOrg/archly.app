@@ -44,7 +44,7 @@ export function InfoDrawer({ site }: InfoDrawerProperties): JSX.Element {
     >
       <input id='my-drawer' type='checkbox' className='drawer-toggle' />
       <div className='flex w-full items-center justify-center'>
-        <Button onClick={onOpen} className='drawer-button btn btn-primary'>
+        <Button onClick={onOpen} className='btn drawer-button btn-primary'>
           More info
         </Button>
         <div>More info</div>
@@ -62,7 +62,6 @@ export default function SiteDetail(): JSX.Element {
   // const navigate = useNavigate()
   const { Moralis } = useMoralis()
   const { siteId } = useParams()
-  console.log('siteId', siteId)
 
   // const {description} = site;
   const [loading, setLoading] = useState(false)
@@ -73,7 +72,9 @@ export default function SiteDetail(): JSX.Element {
   const [currentCoords, setCurrentCoords] =
     useState<google.maps.LatLngLiteral>()
   const wrapper = useRef<HTMLDivElement>(null)
-  const getCurrentSite = useCallback(async (): Promise<Site | undefined> => {
+  const getCurrentSite = useCallback(async (): Promise<
+    Error | Site | undefined
+  > => {
     // console.log('Fetching site...')
     try {
       setLoading(true)
@@ -83,11 +84,7 @@ export default function SiteDetail(): JSX.Element {
 
       let site = {}
       const result = await query.find()
-      console.log('detail result', result)
-
       if (result.length > 0) {
-        console.log('hello', result[0])
-
         for (const element of result) {
           site = {
             ...site,
@@ -123,8 +120,6 @@ export default function SiteDetail(): JSX.Element {
 
   useEffect(() => {
     if (currentSite === undefined) {
-      console.log('currentSite is undefined')
-
       getCurrentSite()
         .then(result => {
           // eslint-disable-next-line no-console

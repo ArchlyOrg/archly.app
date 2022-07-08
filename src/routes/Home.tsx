@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { HeroMap, SitesList } from '@archly/components'
 import type { Site } from '@archly/types'
-import { heroMapConfig } from '@archly/utils/constants'
 import { useMoralis } from 'react-moralis'
 
 export default function HomePage(): JSX.Element {
@@ -10,14 +9,6 @@ export default function HomePage(): JSX.Element {
   const wrapper = useRef<HTMLDivElement>(null)
   const [loading, setLoading] = useState(false)
   const [primarySite, setPrimarySite] = useState<Site | undefined>()
-  const [primaryCoords, setPrimaryCoords] = useState<google.maps.LatLngLiteral>(
-    primarySite !== undefined
-      ? ({
-          lat: primarySite.lat,
-          lng: primarySite.lng
-        } as unknown as google.maps.LatLngLiteral)
-      : heroMapConfig.center
-  )
 
   const getPrimarySite = useCallback(async (): Promise<Site | undefined> => {
     try {
@@ -35,10 +26,6 @@ export default function HomePage(): JSX.Element {
         }
       }
       setPrimarySite(site as Site)
-      setPrimaryCoords({
-        lat: result[0].attributes.lat as number,
-        lng: result[0].attributes.lng as number
-      } as unknown as google.maps.LatLngLiteral)
       setLoading(false)
       return result[0].attributes as Site
     } catch (error) {

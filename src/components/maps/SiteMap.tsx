@@ -14,8 +14,8 @@ function RenderMap({ centerCoords }: SiteMapProperties): JSX.Element {
   const onHandleOnLoad = useCallback(
     (mapInstance: google.maps.Map) => {
       if (centerCoords !== undefined) {
-        mapInstance.setCenter(centerCoords)
         mapInstance.panTo(centerCoords)
+        mapInstance.setCenter(centerCoords)
       }
     },
     [centerCoords]
@@ -24,7 +24,7 @@ function RenderMap({ centerCoords }: SiteMapProperties): JSX.Element {
   return (
     <div
       ref={reference}
-      className='absolute top-0 left-0 h-screen w-full border-red-600'
+      className='absolute top-0 left-0 z-0 h-screen w-full border-red-600'
     >
       <GoogleMap
         mapContainerStyle={{
@@ -32,7 +32,8 @@ function RenderMap({ centerCoords }: SiteMapProperties): JSX.Element {
           width: '100%',
           top: 0,
           left: 0,
-          position: 'absolute'
+          position: 'absolute',
+          zIndex: 0
         }}
         center={centerCoords as google.maps.LatLngLiteral}
         options={siteMapConfig as google.maps.MapOptions}
@@ -47,18 +48,15 @@ function SiteMap({ centerCoords }: SiteMapProperties): JSX.Element {
     googleMapsApiKey: mapsApiKey
   })
 
-  // try {
-  //   let coords = new google.maps.LatLng({ lat: 0, lng: 0 })
-  //   if (centerCoords !== undefined) {
-  //     coords = new google.maps.LatLng(centerCoords)
-  //   }
-  //   console.log('centerCoords', centerCoords)
-  //   if (loadError) {
-  //     throw new Error(loadError.message)
-  //   }
-  // } catch (error) {
-  //   console.error(error)
-  // }
+  try {
+    if (loadError) {
+      throw new Error(loadError.message)
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error)
+    return <LoadingOrError error={error as Error} />
+  }
 
   return isLoaded && centerCoords !== undefined ? (
     <RenderMap centerCoords={centerCoords} />

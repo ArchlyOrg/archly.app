@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from 'react'
 
+import { LoadingOrError } from '@archly/components'
 import type { Site } from '@archly/types'
 import { heroMapConfig, mapsApiKey } from '@archly/utils/constants'
 import {
@@ -15,7 +16,7 @@ export interface HeroMapProperties {
 
 function RenderMap({ site }: HeroMapProperties): JSX.Element {
   const reference = useRef<HTMLDivElement>(null)
-  const [heroMap, setHeroMap] = useState<google.maps.Map | undefined>()
+  // const [heroMap, setHeroMap] = useState<google.maps.Map | undefined>()
   const { center, zoom } = heroMapConfig
   const markerWidth = 75
   const markerHeight = 100
@@ -33,7 +34,6 @@ function RenderMap({ site }: HeroMapProperties): JSX.Element {
   const onHandleActiveMarker = useCallback(
     (marker: string) => {
       if (marker === activeMarker) {
-        console.log('activeMarker', marker)
         return
       }
       setActiveMarker(marker)
@@ -44,29 +44,28 @@ function RenderMap({ site }: HeroMapProperties): JSX.Element {
   const onClearActiveMarker = (): void => setActiveMarker(undefined)
 
   const onHandleOnLoad = useCallback((mapInstance: google.maps.Map) => {
-    setHeroMap(mapInstance)
+    // setHeroMap(mapInstance)
+    // eslint-disable-next-line no-console
+    console.log('mapInstance', mapInstance)
+
     // const bounds = new google.maps.LatLngBounds()
   }, [])
 
-  const { lat, lng, name, siteId, description } = site ?? {}
-  console.log('desc', site)
+  const { name, siteId, description } = site ?? {}
 
   const id = `marker-${siteId ?? ''}`
   const link = `/site/${siteId ?? ''}`
-  // useEffect(() => {
-  //   if (!sites.length === 0) {
-  //     onHandleOnLoad()
-  //   }
-  // }, []);
+
   return (
-    <div ref={reference} className='absolute top-0 left-0 h-screen w-full'>
+    <div ref={reference} className='absolute top-0 left-0 z-0 h-screen w-full'>
       <GoogleMap
         mapContainerStyle={{
           height: '100%',
           width: '100%',
           top: 0,
           left: 0,
-          position: 'absolute'
+          position: 'absolute',
+          zIndex: 0
         }}
         options={heroMapConfig as google.maps.MapOptions}
         zoom={zoom}
@@ -119,12 +118,13 @@ function HeroMap({ site }: HeroMapProperties): JSX.Element {
     googleMapsApiKey: mapsApiKey
   })
   if (loadError) {
+    // eslint-disable-next-line no-console
     console.log('loadError', loadError)
 
     return <div>Error</div>
   }
 
-  return isLoaded ? <RenderMap site={site} /> : <div>Loading</div>
+  return isLoaded ? <RenderMap site={site} /> : <LoadingOrError />
 }
 
 export default HeroMap

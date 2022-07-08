@@ -58,7 +58,7 @@ export function NewSiteButton(): JSX.Element {
         variant='link'
         className='border-0 bg-transparent hover:border-0 hover:bg-transparent'
       >
-        <MdAddLocationAlt className='delay-0 text-3xl text-green-600 transition-colors duration-300 ease-in-out hover:text-green-700 dark:text-blue-400 dark:hover:text-blue-200' />
+        <MdAddLocationAlt className='delay-0 text-3xl text-green-800 transition-colors duration-300 ease-in-out hover:text-green-700 dark:text-green-200 dark:hover:text-blue-200' />
       </Button>
       <Portal>
         <NewSiteDrawer
@@ -258,7 +258,7 @@ export function DarkModeButton(): JSX.Element {
       variant='link'
       className='border-0 bg-transparent hover:border-0 hover:bg-transparent'
     >
-      <ModeIcon className='delay-0 text-3xl text-green-600 transition-colors duration-300 ease-in-out hover:text-green-700 dark:text-blue-400 dark:hover:text-blue-200' />
+      <ModeIcon className='delay-0 text-3xl text-green-800 transition-colors duration-300 ease-in-out hover:text-green-700 dark:text-green-200 dark:hover:text-blue-200' />
     </Button>
   )
 }

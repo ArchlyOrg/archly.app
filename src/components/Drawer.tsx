@@ -39,13 +39,13 @@ export function Drawer({ children, isOpen }: DrawerProperties): JSX.Element {
   return (
     <div
       ref={drawerReference}
-      className={`fixed top-0 left-0 right-0 z-0 h-screen w-screen overflow-hidden transition-all ${
-        isOpen ? 'z-0' : '-z-10'
+      className={`fixed top-0 left-0 right-0 h-screen w-screen overflow-hidden transition-all ${
+        isOpen ? 'z-[99]' : '-z-10'
       }`}
     >
       <div
         ref={overlayReference}
-        className={`delay-0 absolute top-0 left-0 right-0 z-0 h-full w-screen transform bg-green-900 shadow-xl  backdrop-filter transition-all duration-300 ease-in-out  backdrop:blur-xl ${
+        className={`delay-0 absolute top-0 left-0 right-0 z-[0] h-full w-screen transform bg-green-900 shadow-xl  backdrop-filter transition-all duration-300 ease-in-out  backdrop:blur-xl ${
           isOpen ? 'opacity-70 ' : 'pointer-events-none opacity-0 '
         }`}
       >

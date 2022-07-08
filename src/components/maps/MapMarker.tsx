@@ -35,7 +35,7 @@ export function MapMarker(
   const markerSize = useRef<google.maps.Size>(
     new google.maps.Size(markerWidth, markerHeight)
   )
-  const { site, title, position, visible } = markerOptions
+  const { site, title, position } = markerOptions
   // const coords = site ? {lat: Number.parseFloat(site.lat), lng: Number.parseFloat(site.lng)} : position
   // const options = { title, position, visible } as google.maps.MarkerOptions
   // console.log('MapMarker', markerOptions)
@@ -60,8 +60,6 @@ export function MapMarker(
 
   useEffect(() => {
     if (marker.current && position) {
-      console.log('MapMarker', marker.current)
-
       marker.current.setIcon({
         url: '/md-pin.svg',
         scaledSize: markerSize.current
@@ -71,7 +69,6 @@ export function MapMarker(
       marker.current.setVisible(true)
       marker.current.setAnimation(google.maps.Animation.DROP)
 
-      // console.log('marker: ', marker);
       if (site) {
         const zPlus = 1
         marker.current.addListener('click', () => {
@@ -83,8 +80,6 @@ export function MapMarker(
               anchor: marker.current
             })
           }
-          // console.log('infoWindow:', infoWindow)
-          console.log('infoWindow:', infoWindow)
         })
       }
     }
@@ -106,9 +101,6 @@ export function MapMarker(
 
   useEffect(() => {
     if (marker.current && infoWindow.getContent() !== '') {
-      // console.log('marker: ', marker);
-      console.log('infoWindow clcik:', infoWindow)
-
       google.maps.event.addListener(infoWindow, 'domready', () => {
         if (siteId !== undefined) {
           const button = document.querySelector(`[data-buttonId="${siteId}"]`)
