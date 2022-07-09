@@ -13,24 +13,31 @@ export default function HomePage(): JSX.Element {
   const getPrimarySite = useCallback(async (): Promise<Site | undefined> => {
     try {
       setLoading(true)
-      const Sites = Moralis.Object.extend('Sites') as string
+      const Sites = Moralis.Object.extend('SitesThirdWeb') as string
       const query = new Moralis.Query(Sites)
       query.equalTo('primarySite', true)
       let site = {}
       const result = await query.find()
-      for (const element of result) {
-        site = {
-          ...site,
-          ...element.attributes,
-          siteId: element.id
+
+      if (result.length > 0) {
+        for (const element of result) {
+          site = {
+            ...site,
+            ...element.attributes,
+            siteId: element.id
+          }
         }
+        console.log('getPrimarySite result:', result)
+
+        setPrimarySite(site as Site)
+        setLoading(false)
+        return result[0].attributes as Site
       }
-      setPrimarySite(site as Site)
-      setLoading(false)
-      return result[0].attributes as Site
+      throw new Error('No sites found')
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.log('error:', error)
+      console.log('getPrimarySite():', error)
+      setLoading(false)
       return undefined
     }
   }, [Moralis.Object, Moralis.Query])
@@ -44,7 +51,7 @@ export default function HomePage(): JSX.Element {
         })
         .catch(error => {
           // eslint-disable-next-line no-console
-          console.log('error:', error)
+          console.log('getPrimarySite() uef() error:', error)
           setLoading(false)
         })
     }

@@ -6,11 +6,11 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "dev": "vite --host archly.local --port 3000",
+    "dev": "vite --host archly.localhost --port 3000",
     "build": "vite build",
     "commit": "cz",
     "prepare": "husky install",
-    "preview": "vite preview",
+    "preview": "vite preview --host archly.localhost",
     "preview:test": "start-server-and-test preview http://localhost:4173",
     "test": "vitest",
     "test:ci": "vitest run",

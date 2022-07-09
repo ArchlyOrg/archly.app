@@ -104,7 +104,7 @@ export default function SiteDetail(): JSX.Element {
       throw new Error('No site found')
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.log('error', error)
+      console.log('getCurrentSite() error', error)
       return undefined
     }
   }, [Moralis.Object, Moralis.Query, siteId])
@@ -127,7 +127,7 @@ export default function SiteDetail(): JSX.Element {
         })
         .catch(error => {
           // eslint-disable-next-line no-console
-          console.log('error:', error)
+          console.log('getCurrentSite() uef() error:', error)
           setLoading(false)
         })
     }
