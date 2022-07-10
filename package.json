@@ -27,7 +27,6 @@
   },
   "dependencies": {
     "@googlemaps/markerclusterer": "^2.0.7",
-    "@googlemaps/react-wrapper": "^1.1.34",
     "@react-google-maps/api": "^2.11.8",
     "@thirdweb-dev/contracts": "^2.4.3",
     "daisyui": "^2.15.4",

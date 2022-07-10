@@ -67,10 +67,10 @@ export default function SitesPage(): ReactElement {
     <main ref={wrapper}>
       <section className='w-100 relative flex h-screen flex-col content-center items-center  justify-center bg-darkish dark:bg-darkish'>
         <LocalSitesMap sites={sites} />
-        <div className='section__content w-3/4'>
+        <div className='section__content pointer-events-none w-3/4'>
           <div className='relative'>
             <div className='flex flex-row gap-2'>
-              <h1>archly sites</h1>
+              <h1>Archly sites</h1>
             </div>
             <p className='mb-1 text-lg leading-loose md:text-xl'>
               Search, browse, discover &amp; learn about

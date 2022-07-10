@@ -20,6 +20,8 @@ import type {
   notifyType
 } from 'web3uikit/dist/components/Notification/types'
 
+import '@archly/styles/Maps.css'
+
 interface LocalSitesMapProperties {
   sites?: Site[]
 }
@@ -31,6 +33,12 @@ interface LocalSitesMapProperties {
 function RenderMap({ sites }: LocalSitesMapProperties): JSX.Element {
   const reference = useRef<HTMLDivElement>(null)
   const [sitesMap, setSitesMap] = useState<google.maps.Map | null>()
+  // const { theme }: UseDarkModeType = useDarkMode()
+  // const isDark = theme === 'dark'
+  const mapOptions = {
+    localSitesMapConfig
+    // styles: !isDark ? mapStylesLight.styles : localSitesMapConfig.styles
+  }
   const { center } = heroMapConfig
   // const markers: google.maps.Marker[] & MapMarkerProperties[] = useMemo(
   //   () => [],
@@ -85,68 +93,71 @@ function RenderMap({ sites }: LocalSitesMapProperties): JSX.Element {
     [dispatch]
   )
 
-  const labelOffsetX = 25
+  const labelOffsetX = 30
   const labelOffsetY = 0
-  const timeout = 5000
-  const getGeoLocation = useCallback(async (): Promise<
-    GeolocationPosition | undefined
-  > => {
-    const options = {
-      enableHighAccuracy: true,
-      timeout,
-      maximumAge: 0
-    }
-    try {
-      setLoading(true)
-      if (typeof navigator !== 'undefined') {
-        console.log('navigator', navigator.geolocation)
+  const timeout = 2000
+  const getGeoLocation = useCallback(
+    async (
+      map: google.maps.Map,
+      mapBounds: google.maps.LatLngBounds
+    ): Promise<GeolocationPosition | undefined> => {
+      const options = {
+        enableHighAccuracy: true,
+        timeout,
+        maximumAge: 0
+      }
+      try {
+        setLoading(true)
+        if (typeof navigator !== 'undefined') {
+          console.log('navigator', navigator.geolocation)
 
-        navigator.geolocation.getCurrentPosition(
-          (
-            position: GeolocationPosition
-          ): GeolocationPosition | GeolocationPositionError | undefined => {
-            // const pos = {
-            //   lat: position.coords.latitude,
-            //   lng: position.coords.longitude
-            // }
-            if (position.coords.latitude && position.coords.longitude) {
-              setUserPos(position)
-
+          navigator.geolocation.getCurrentPosition(
+            (
+              position: GeolocationPosition
+            ): GeolocationPosition | GeolocationPositionError | undefined => {
+              if (position.coords.latitude && position.coords.longitude) {
+                setUserPos(position)
+                setLoading(false)
+                console.log('position', position)
+                setTimeout(() => {
+                  handleGeoLocNotification(
+                    'success',
+                    'check',
+                    'bottomR',
+                    'Your location has been successfully retrieved.',
+                    'GeoLocation retrieved'
+                  )
+                  const coords = new google.maps.LatLng(
+                    position.coords.latitude,
+                    position.coords.longitude
+                  )
+                  console.log('coords', mapBounds)
+                  mapBounds.extend(coords)
+                  const userCenter = mapBounds.getCenter()
+                  // map.setZoom
+                  map.panTo(userCenter)
+                  map.fitBounds(mapBounds)
+                }, timeout)
+                return position
+              }
+              throw new Error('No coordinates found')
+            },
+            error => {
               setLoading(false)
-              return position
-            }
-            throw new Error('No coordinates found')
-          },
-          error => {
-            // handleGeoLocNotification(
-            //   'warning',
-            //   'exclamation',
-            //   'bottomR',
-            //   handleLocationError(),
-            //   'GeoLocation failed'
-            // )
-            setLoading(false)
-            return error
-          },
-          options
-        )
+              return error
+            },
+            options
+          )
+          return undefined
+        }
+      } catch {
+        setLoading(false)
         return undefined
       }
-    } catch {
-      // Browser doesn't support Geolocation
-
-      // handleGeoLocNotification(
-      //   'warning',
-      //   'exclamation',
-      //   'bottomR',
-      //   handleLocationError(),
-      //   'GeoLocation failed'
-      // )
-      // setLoading(false)
-      return undefined
-    }
-    return userPos ?? undefined
-  }, [handleGeoLocNotification, userPos])
+      return userPos ?? undefined
+    },
+    [handleGeoLocNotification, userPos]
+  )
 
   const onHandleOnLoad = useCallback(
     (mapInstance: google.maps.Map) => {
@@ -160,11 +171,11 @@ function RenderMap({ sites }: LocalSitesMapProperties): JSX.Element {
           'GeoLocation'
         )
       }
-      const userLocation = getGeoLocation()
+      const userLocation = getGeoLocation(mapInstance, bounds)
       userLocation
         .then(position => {
-          if (position) {
-            console.log('positiony', position)
+          if (position?.coords.latitude && position.coords.longitude) {
+            console.log('userLocation', position)
             handleGeoLocNotification(
               'success',
               'check',
@@ -172,42 +183,33 @@ function RenderMap({ sites }: LocalSitesMapProperties): JSX.Element {
               'Your location has been successfully retrieved.',
               'GeoLocation retrieved'
             )
-            setUserPos(position)
-            const userMarker: google.maps.Marker | undefined =
-              position.coords.latitude && position.coords.longitude
-                ? new google.maps.Marker({
-                    position: {
-                      lat: position.coords.latitude,
-                      lng: position.coords.longitude
-                    },
-                    title: 'Your current position',
-                    label: 'You are here!',
-                    icon: {
-                      url: '/md-pin.svg',
-                      scaledSize: markerSize.current
-                    },
-                    map: sitesMap
-                  })
-                : undefined
-            // userMarker && latlngBounds.current && latlngBounds.current.extend(userMarker.getPosition());
-            userMarker?.setAnimation(google.maps.Animation.DROP)
+            // setUserPos(position)
+            // const userMarker: google.maps.Marker | undefined =
+            //   position.coords.latitude && position.coords.longitude
+            //     ? new google.maps.Marker({
+            //         position: {
+            //           lat: position.coords.latitude,
+            //           lng: position.coords.longitude
+            //         },
+            //         title: 'Your current position',
+            //         label: 'You are here!',
+            //         icon: {
+            //           url: '/md-pin.svg',
+            //           scaledSize: markerSize.current
+            //         },
+            //         map: sitesMap
+            //       })
+            //     : undefined
+            // // userMarker && latlngBounds.current && latlngBounds.current.extend(userMarker.getPosition());
+            // userMarker?.setAnimation(google.maps.Animation.DROP)
           }
         })
         .catch(() => {
+          // eslint-disable-next-line no-console
           console.log('error')
         })
 
       if (sites && sites.length > 0) {
-        if (userPos !== undefined) {
-          // eslint-disable-next-line no-console
-          console.log('userPos', userPos)
-          bounds.extend(
-            new google.maps.LatLng(
-              userPos.coords.latitude,
-              userPos.coords.longitude
-            )
-          )
-        }
         for (const { lat, lng } of sites) {
           const position = new google.maps.LatLng(
             Number.parseFloat(lat),
@@ -221,27 +223,25 @@ function RenderMap({ sites }: LocalSitesMapProperties): JSX.Element {
             userPos.coords.latitude,
             userPos.coords.longitude
           )
-          mapInstance.panTo(
-            new google.maps.LatLng(
-              userPos.coords.latitude,
-              userPos.coords.longitude
-            )
-          )
+          // mapInstance.panTo(
+          //   new google.maps.LatLng(
+          //     userPos.coords.latitude,
+          //     userPos.coords.longitude
+          //   )
+          // )
           bounds.extend(userLatLng)
         }
         setSitesMap(mapInstance)
       }
     },
-    [
-      getGeoLocation,
-      handleGeoLocNotification,
-      loading,
-      sites,
-      sitesMap,
-      userPos
-    ]
+    [getGeoLocation, handleGeoLocNotification, loading, sites, userPos]
   )
 
+  // useEffect(() => {
+  //   if (sitesMap && isDark) {
+  //     onHandleOnLoad(sitesMap)
+  //   }
+  // }, [isDark, onHandleOnLoad, sitesMap])
   return (
     <div ref={reference} className='map absolute top-0 left-0 h-screen w-full'>
       <GoogleMap
@@ -262,10 +262,8 @@ function RenderMap({ sites }: LocalSitesMapProperties): JSX.Element {
             title={`Lat: ${userPos.coords.latitude}, Lng: ${userPos.coords.longitude}`}
             label={{
               text: 'You are here!',
-              color: '#fff',
-              fontSize: '18px',
-              fontWeight: 'bold',
-              fontFamily: '"Exo 2", sans-serif'
+              // eslint-disable-next-line unicorn/no-keyword-prefix
+              className: 'user-marker'
             }}
             key='userPosMarker'
             position={{
