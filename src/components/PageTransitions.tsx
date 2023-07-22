@@ -2,6 +2,7 @@
 import type { ReactNode } from 'react'
 import { useEffect, useRef } from 'react'
 
+import '@archly/styles/PageTransitions.css'
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
 
 interface MainComponentProperties {
@@ -12,35 +13,35 @@ function MainComponent({
   routingPageOffset,
   children
 }: MainComponentProperties): JSX.Element {
-  const reference = useRef<HTMLDivElement>(null)
+  const mainComponentReference = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    if (reference.current) {
-      const mainElement = reference.current.querySelector('main')
+    if (mainComponentReference.current) {
+      const mainElement = mainComponentReference.current.querySelector('main')
       if (mainElement) {
         mainElement.style.transform = `translateX(${routingPageOffset}px)`
       }
     }
-  }, [reference, routingPageOffset])
+  }, [mainComponentReference, routingPageOffset])
   return (
-    <div ref={reference} className='main-component relative'>
+    <div ref={mainComponentReference} className='main-component relative'>
       {children}
     </div>
   )
 }
 
 function WipeTransition(): JSX.Element {
-  const reference = useRef<HTMLDivElement>(null)
+  const wipeElementReference = useRef<HTMLDivElement>(null)
   return (
     <div
-      ref={reference}
+      ref={wipeElementReference}
       className='
 			wipe
-			w-100
 			fixed
 			top-0
 			left-0
 			z-20
 			h-screen
+			w-full
 			translate-y-full
 			bg-gray-700'
     />

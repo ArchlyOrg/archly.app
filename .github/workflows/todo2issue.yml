@@ -1,0 +1,15 @@
+name: 'Todo2Issue'
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: 'actions/checkout@master'
+      - name: todo-actions
+        uses: dtinth/todo-actions@v0.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TODO_ACTIONS_MONGO_URL: ${{ secrets.TODO_ACTIONS_MONGO_URL }}

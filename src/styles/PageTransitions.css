@@ -1,46 +1,55 @@
-.main-component.page-enter {
-  opacity: 0;
-  transform: translateY(100%);
-}
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
-.main-component.page-enter-active {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 1;
-  width: 100%;
-  transition: opacity 0.5s 0.3s ease;
-}
+@layer components {
+  .main-component {
+    &.page-enter {
+      opacity: 0;
+      transform: translateY(100%);
+    }
 
-.main-component.page-exit {
-  opacity: 1;
-  transition: opacity 0.5s 0.3s ease;
-  & + .wipe: {
-    transform: translateY(100%);
-    transform-origin: top;
+    &.page-enter-active {
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 1;
+      width: 100%;
+      transition: opacity 0.5s 0.3s ease;
+    }
+
+    &.page-exit {
+      opacity: 1;
+      transition: opacity 0.5s 0.3s ease;
+
+      /* & + .wipe: {
+      transform: translateY(100%);
+      transform-origin: top;
+    } */
+    }
+
+    &.page-exit-active {
+      opacity: 0;
+
+      & + .wipe {
+        transform: translateY(0);
+        transform-origin: bottom;
+        transition: transform 0.5s ease, opacity 0.5s 0.2s ease;
+      }
+
+      main {
+        /* transform: `translateY(${routingPageOffset}px)`; */
+      }
+    }
+
+    &.page-enter-done {
+      opacity: 1;
+
+      & + .wipe {
+        transform: translateY(-100%);
+        transform-origin: top;
+        transition: transform 0.5s ease, opacity 0.5s 0.2s ease;
+      }
+    }
   }
-}
-
-.main-component.page-exit-active {
-  opacity: 0;
-}
-
-.main-component.page-exit-active main {
-  /* transform: `translateY(${routingPageOffset}px)`; */
-}
-
-.main-component.page-exit-active + .wipe {
-  transform: translateY(0);
-  transform-origin: bottom;
-  transition: transform 0.5s ease, opacity 0.5s 0.2s ease;
-}
-
-.main-component.page-enter-done {
-  opacity: 1;
-}
-
-.main-component.page-enter-done + .wipe {
-  transform: translateY(-100%);
-  transform-origin: top;
-  transition: transform 0.5s ease, opacity 0.5s 0.2s ease;
 }

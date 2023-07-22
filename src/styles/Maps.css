@@ -1,0 +1,13 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer components {
+  .user-marker {
+    @apply -rotate-12 font-sans text-2xl font-black text-slate-600 shadow-sm transition-colors duration-200 dark:text-slate-300 !important;
+
+    & + * {
+      @apply bg-green-200 fill-blue-200 text-green-200 !important;
+    }
+  }
+}

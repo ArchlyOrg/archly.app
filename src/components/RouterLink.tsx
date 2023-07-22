@@ -22,6 +22,9 @@ function RouterLink({
       to={href}
       replace={replace as boolean}
       reloadDocument={reloadDocument as boolean}
+      // className={({ isActive }: { isActive: boolean }): string =>
+      //   isActive ? 'border-b-slate-200' : ''
+      // }
     >
       {children}
     </LinkComponent>

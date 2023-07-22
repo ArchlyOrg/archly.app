@@ -55,7 +55,7 @@ export default function SiteCard({ site }: SiteCardProperties): JSX.Element {
       return owner
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.log('error:', error)
+      console.log('fetchSiteUser() error:', error)
 
       return undefined
     }
@@ -71,7 +71,7 @@ export default function SiteCard({ site }: SiteCardProperties): JSX.Element {
         })
         .catch(error => {
           // eslint-disable-next-line no-console
-          console.log('error:', error)
+          console.log('fetchSiteUser uef() error:', error)
         })
     }
   }, [fetchSiteUser, siteCreatedBy])

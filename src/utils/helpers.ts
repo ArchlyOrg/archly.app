@@ -15,7 +15,9 @@ export function copyText(text: string): void {
   }
 }
 
-export const handleLocationError = (browserHasGeolocation: boolean): string => {
+export const handleLocationError = (): string => {
+  const browserHasGeolocation = !!(typeof window !== 'undefined' && typeof navigator !== 'undefined')
+
   // eslint-disable-next-line no-console
   console.log(
     browserHasGeolocation

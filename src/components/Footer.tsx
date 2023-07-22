@@ -19,7 +19,7 @@ function Footer(): JSX.Element {
       px-10
       py-1'
     >
-      <div className='mx-auto text-lg font-medium text-green-100'>
+      <div className='mx-auto py-5 text-lg font-medium text-slate-300'>
         <RouterLink href='/'>archly.app</RouterLink>
       </div>
     </footer>
