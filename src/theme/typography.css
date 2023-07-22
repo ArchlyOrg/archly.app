@@ -4,7 +4,7 @@
 
 @layer base {
   h1 {
-    @apply font-sans text-8xl font-black  text-green-600 transition-colors duration-200 ease-in-out dark:text-green-200;
+    @apply font-sans text-8xl font-black  text-green-600 transition-colors duration-200 ease-in-out dark:text-slate-400;
   }
 
   h2 {
@@ -16,6 +16,6 @@
   }
 
   p {
-    @apply text-lg text-gray-600 transition-colors duration-200 ease-in-out dark:text-gray-300;
+    @apply text-lg text-gray-600 transition-colors duration-200 ease-in-out dark:text-gray-100;
   }
 }

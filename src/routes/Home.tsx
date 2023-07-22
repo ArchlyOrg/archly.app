@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { HeroMap, SitesList } from '@archly/components'
+import { HeroMap } from '@archly/components'
 import type { Site } from '@archly/types'
+import { MdAddLocationAlt } from 'react-icons/md'
 import { useMoralis } from 'react-moralis'
 
 export default function HomePage(): JSX.Element {
@@ -64,17 +65,25 @@ export default function HomePage(): JSX.Element {
         className='w-100 relative flex h-screen flex-col content-center items-center justify-center'
       >
         <HeroMap site={primarySite} />
-        <div className='section__content  relative mt-28 max-w-screen-2xl text-center'>
-          <h1>Archly</h1>
-          <p>The Social App for Archaeology Nerds.</p>
-          {loading ? <p>Loading map...</p> : ''}
+        <div className='section__content  relative mt-28 max-w-screen-2xl space-y-5 text-center'>
+          <h1 className='inline-flex gap-0'>
+            Archly
+            <MdAddLocationAlt
+              className='-translate-x-1 text-7xl text-green-600 transition-colors duration-200 ease-in-out dark:text-slate-500'
+              name='logo'
+            />
+          </h1>
+          <p className='text-2xl'>
+            The social app for archaeology &amp; history nerds.
+          </p>
+          {/* {loading ? <p>Loading map...</p> : ''} */}
         </div>
       </section>
-      <section className='w-100 relative flex h-screen flex-col content-center items-center  justify-center '>
+      {/* <section className='w-100 relative flex h-screen flex-col content-center items-center  justify-center '>
         <div className='section__content w-3/4'>
           <SitesList />
         </div>
-      </section>
+      </section> */}
     </main>
   )
 }
